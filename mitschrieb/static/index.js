@@ -162,3 +162,24 @@ async function loadList() {
   }
 }
 loadList();
+
+async function checkApiKey() {
+  const res = await fetch("/api/einstellungen");
+  const { has_api_key } = await res.json();
+  $("key-card").hidden = has_api_key;
+}
+
+$("api-key-save").onclick = async () => {
+  const res = await fetch("/api/einstellungen", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: $("api-key").value }),
+  });
+  if (res.ok) {
+    $("api-key").value = "";
+    checkApiKey();
+  } else {
+    $("api-key-status").textContent = (await res.json()).error;
+  }
+};
+checkApiKey();

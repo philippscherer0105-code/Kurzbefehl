@@ -9,6 +9,20 @@
 <body>
 <header class="top"><h1><a href="/">🎓 Vorlesungs-Mitschrieb</a></h1></header>
 <main>
+  <section class="card" id="key-card" hidden>
+    <h2>API-Schlüssel einrichten (einmalig)</h2>
+    <p class="muted">
+      Für die Erstellung des Mitschriebs wird ein Anthropic-API-Schlüssel benötigt. Du bekommst ihn unter
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.
+      Er wird nur lokal auf diesem Computer gespeichert.
+    </p>
+    <div class="row">
+      <input type="text" id="api-key" placeholder="sk-ant-..." autocomplete="off" style="flex:1;min-width:220px">
+      <button type="button" class="primary" id="api-key-save">Speichern</button>
+    </div>
+    <p id="api-key-status" class="muted"></p>
+  </section>
+
   <div id="recovery" class="notice" hidden>
     Es gibt eine unterbrochene Aufnahme (<span id="recovery-length"></span>).
     <button type="button" id="recovery-use">Wiederherstellen</button>

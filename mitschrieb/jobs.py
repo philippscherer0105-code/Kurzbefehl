@@ -11,8 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import notes, transcribe
-
-DATA_DIR = Path(os.environ.get("MITSCHRIEB_DATA", Path(__file__).resolve().parent.parent / "data"))
+from .config import DATA_DIR
 
 _lock = threading.Lock()
 _live: dict[str, dict] = {}  # Laufzeitstatus: Fortschritt und gestreamter Text

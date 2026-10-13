@@ -8,7 +8,7 @@ from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template, request, send_file
 
-from . import jobs
+from . import config, jobs
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -46,6 +46,20 @@ def export(note_id: str):
         "Content-Type": "text/html; charset=utf-8",
         "Content-Disposition": f"attachment; filename*=UTF-8''{_quote(filename)}",
     }
+
+
+@app.get("/api/einstellungen")
+def get_settings():
+    return jsonify(has_api_key=bool(config.api_key()))
+
+
+@app.post("/api/einstellungen")
+def save_settings():
+    key = (request.get_json(silent=True) or {}).get("api_key", "").strip()
+    if not key.startswith("sk-ant-"):
+        return jsonify(error="Der Schlüssel sollte mit „sk-ant-“ beginnen."), 400
+    config.save_api_key(key)
+    return jsonify(ok=True)
 
 
 @app.get("/api/mitschriebe")
@@ -132,13 +146,42 @@ def _quote(value: str) -> str:
     return quote(value)
 
 
+def _free_port(host: str, preferred: int) -> int:
+    import socket
+
+    for port in range(preferred, preferred + 20):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            try:
+                sock.bind((host, port))
+                return port
+            except OSError:
+                continue
+    raise SystemExit(f"Kein freier Port zwischen {preferred} und {preferred + 19} gefunden.")
+
+
 def main() -> None:
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("Hinweis: ANTHROPIC_API_KEY ist nicht gesetzt – die Mitschrieb-Erstellung wird fehlschlagen.")
+    import threading
+    import webbrowser
+
     jobs.start_worker()
     host = os.environ.get("HOST", "127.0.0.1")
-    port = int(os.environ.get("PORT", "5000"))
-    print(f"Mitschrieb läuft auf http://{'localhost' if host == '127.0.0.1' else host}:{port}")
+    port = _free_port(host, int(os.environ.get("PORT", "8765")))
+    url = f"http://{'localhost' if host in ('127.0.0.1', '0.0.0.0') else host}:{port}"
+    print()
+    print("  Vorlesungs-Mitschrieb läuft!")
+    print(f"  Im Browser öffnen:  {url}")
+    print("  Beenden: dieses Fenster schließen oder Strg+C drücken.")
+    print()
+    # Entwickler-Hinweise von Flask/Werkzeug ausblenden, sie verwirren nur
+    import logging
+
+    import flask.cli
+
+    flask.cli.show_server_banner = lambda *args, **kwargs: None
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
+    if os.environ.get("NO_BROWSER") != "1":
+        threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     app.run(host=host, port=port, threaded=True)
 
 

@@ -25,28 +25,56 @@ strukturierten Mitschrieb (live mitlesbar) → Export als PDF, HTML oder Markdow
 - Export: **Drucken/PDF**, eigenständige **HTML-Datei**, **Markdown** (z. B. für Obsidian/Notion).
 - Mitschrieb mit anderen Wünschen **neu erstellen**, ohne erneut zu transkribieren.
 
-## Installation
+## Installation & Start
 
-Voraussetzungen: Python 3.10+ und ein [Anthropic-API-Schlüssel](https://console.anthropic.com/).
+> **Wichtig:** Das Programm läuft auf **deinem eigenen Computer**. `localhost` bedeutet
+> „dieser Computer“ – die Adresse funktioniert also erst, wenn du das Programm dort
+> gestartet hast. Solange das Startfenster offen ist, läuft es.
+
+**1. Python installieren** (einmalig, Version 3.10 oder neuer):
+[python.org/downloads](https://www.python.org/downloads/).
+Unter Windows beim Installieren unbedingt **„Add python.exe to PATH“** anhaken.
+
+**2. Projekt herunterladen:** Auf GitHub auf **Code → Download ZIP** klicken und entpacken
+(oder `git clone`).
+
+**3. Starten per Doppelklick:**
+
+| System | Datei |
+|---|---|
+| Windows | `start.bat` |
+| macOS | `start.command` (beim ersten Mal: Rechtsklick → **Öffnen**, da die Datei nicht aus dem App Store stammt) |
+| Linux | `start.sh` (im Terminal: `./start.sh`) |
+
+Beim ersten Start werden alle Abhängigkeiten installiert (dauert ein paar Minuten).
+Danach öffnet sich der Browser automatisch mit **http://localhost:8765**. Ist der Port
+belegt, wird automatisch der nächste freie genommen – die richtige Adresse steht im
+Startfenster.
+
+**4. API-Schlüssel eintragen:** Beim ersten Öffnen fragt die Seite nach einem
+[Anthropic-API-Schlüssel](https://console.anthropic.com/settings/keys). Er wird nur lokal
+in `data/api_key.txt` gespeichert. (Alternativ: Umgebungsvariable `ANTHROPIC_API_KEY`.)
+
+<details>
+<summary>Manuell im Terminal starten</summary>
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-## Starten
-
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."   # Windows (PowerShell): $env:ANTHROPIC_API_KEY="sk-ant-..."
 python -m mitschrieb
 ```
+</details>
 
-Dann im Browser **http://localhost:5000** öffnen.
+### Wenn es nicht klappt
 
-> Das Mikrofon funktioniert im Browser nur über `localhost` oder HTTPS. Wenn du mit dem
-> Handy aufnehmen willst, nimm dort mit einer Diktier-App auf und lade die Datei hoch –
-> oder stelle den Server per HTTPS bereit (`HOST=0.0.0.0` plus Reverse-Proxy/Tunnel).
+| Problem | Lösung |
+|---|---|
+| Browser zeigt „Seite nicht erreichbar“ | Das Startfenster muss offen bleiben. Adresse aus dem Startfenster verwenden. |
+| „Python wurde nicht gefunden“ | Python installieren (siehe oben), unter Windows „Add to PATH“ anhaken, danach neu starten. |
+| macOS: „kann nicht geöffnet werden“ | Rechtsklick auf `start.command` → Öffnen. Oder im Terminal: `chmod +x start.sh start.command`. |
+| Mikrofon wird nicht freigegeben | Im Browser über das Schloss-Symbol in der Adressleiste das Mikrofon erlauben. Funktioniert nur unter `localhost`, nicht über die IP-Adresse. |
+| Aufnahme am Handy | Mit einer Diktier-App aufnehmen und die Datei unter „… oder vorhandene Datei verwenden“ hochladen. |
 
 Beim ersten Transkribieren lädt Whisper das Sprachmodell herunter (einmalig, ca. 500 MB
 für `small`). Die Spracherkennung läuft komplett lokal; nur das Transkript (und ggf. die
@@ -62,7 +90,8 @@ Folien) werden zur Mitschrieb-Erstellung an die Claude-API gesendet.
 | `WHISPER_DEVICE` | `auto` | `cpu` oder `cuda` (NVIDIA-GPU) |
 | `WHISPER_COMPUTE_TYPE` | `default` | z. B. `int8` für schnellere CPU-Verarbeitung |
 | `MITSCHRIEB_DATA` | `./data` | Ablageort für Aufnahmen, Transkripte und Mitschriebe |
-| `HOST` / `PORT` | `127.0.0.1` / `5000` | Adresse des Webservers |
+| `HOST` / `PORT` | `127.0.0.1` / `8765` | Adresse des Webservers |
+| `NO_BROWSER` | – | `1` = Browser nicht automatisch öffnen |
 
 **Richtwerte:** Eine 90-minütige Vorlesung braucht mit `small` auf einem aktuellen Laptop
 (CPU) grob 15–30 Minuten zur Transkription, mit GPU nur wenige Minuten. Die Erstellung
@@ -86,6 +115,7 @@ data/20261013-101500-123456/
 ```
 mitschrieb/
 ├── app.py           Flask-Webserver und API
+├── config.py        API-Schlüssel
 ├── jobs.py          Ablage + Hintergrundverarbeitung (Warteschlange)
 ├── transcribe.py    Spracherkennung mit faster-whisper
 ├── notes.py         Mitschrieb-Erstellung mit Claude (Prompt)

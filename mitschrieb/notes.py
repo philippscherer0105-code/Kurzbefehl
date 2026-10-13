@@ -8,6 +8,8 @@ from typing import Callable
 
 import anthropic
 
+from . import config
+
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-5-5")
 
 SYSTEM_PROMPT = """\
@@ -69,7 +71,10 @@ def generate_notes(
     on_text: Callable[[str], None] | None = None,
 ) -> str:
     """Erstellt den Mitschrieb als Markdown. on_text erhält die Textstücke beim Streamen."""
-    client = anthropic.Anthropic()
+    key = config.api_key()
+    if not key:
+        raise NotesError("Kein API-Schlüssel hinterlegt – bitte auf der Startseite eintragen.")
+    client = anthropic.Anthropic(api_key=key)
 
     meta = "\n".join(
         f"{label}: {value}"
