@@ -17,30 +17,23 @@ mit der fertig eingetragenen Verbindung öffnet.
 Der DB Navigator bringt eigene Kurzbefehl-Aktionen mit (in der Aktionssuche
 „DB Navigator“ eingeben). Damit braucht es keinen Link und keine URL-Codierung.
 
-**Aufbau:**
+**Aufbau:** Bei „Reiseauskunft“ lassen sich *Von* und *Nach* nicht mit Variablen
+füllen, sondern nur direkt auswählen. Deshalb kommt in **jede** Menü-Option eine
+eigene Reiseauskunft-Aktion mit fest gewählten Haltestellen. Variablen braucht es nicht.
 
 1. **Aus Menü auswählen** „Wohin geht's?“ → `🎓 Zur DHBW` / `🏠 Heimweg` / `📍 Vom aktuellen Standort`
-2. **🎓 Zur DHBW**
-   - DB Navigator → **Haltestellen suchen** → `Laupheim West`
-   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Start`
-   - DB Navigator → **Haltestellen suchen** → `Hochschule Friedrichshafen`
-   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Ziel`
-3. **🏠 Heimweg**: wie oben, nur Start und Ziel vertauscht
-4. **📍 Vom aktuellen Standort**
-   - DB Navigator → **Haltestellen in der Nähe**
-   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Start`
-     (also die nächste Haltestelle bei dir)
-   - verschachteltes **Aus Menü auswählen** „Wohin?“ → `🏠 Nach Hause` / `🎓 Zur DHBW`,
-     darin jeweils **Haltestellen suchen** → **Erstes Objekt** → **Variable konfigurieren** `Ziel`
-5. Nach **Menü „Ende“**: DB Navigator → **Reiseauskunft**
-   - Bei *Start* (bzw. *Von*) die Variable `Start` einsetzen, bei *Ziel* (bzw. *Nach*) die Variable `Ziel`
-   - Unter dem Pfeil `>` in der Aktion gibt es evtl. noch Optionen wie Zeit oder
-     „App öffnen“ – so einstellen, dass die App mit der Suche aufgeht.
-
-**Hinweis:** Wie die Felder in „Reiseauskunft“ genau heißen, steht unter dem ⓘ neben
-der Aktion. Falls du dort Text direkt eintippen kannst, kannst du dir die Schritte
-„Haltestellen suchen“ und „Erstes Objekt“ sparen und einfach
-`Laupheim West` / `Hochschule Friedrichshafen` reinschreiben.
+2. Unter **🎓 Zur DHBW**: **Reiseauskunft** → *Von* antippen → `Laupheim West` suchen und
+   auswählen, *Nach* → `Hochschule Friedrichshafen` auswählen
+3. Unter **🏠 Heimweg**: **Reiseauskunft** → *Von* `Hochschule Friedrichshafen`,
+   *Nach* `Laupheim West`
+4. Unter **📍 Vom aktuellen Standort**: verschachteltes **Aus Menü auswählen** „Wohin?“
+   → `🏠 Nach Hause` / `🎓 Zur DHBW`, darin jeweils eine **Reiseauskunft**:
+   - *Von*: in der Auswahl nach einem Eintrag wie **„Aktueller Standort“** schauen
+   - *Nach*: `Laupheim West` bzw. `Hochschule Friedrichshafen`
+   - Gibt es „Aktueller Standort“ bei *Von* nicht, nimm für diese Option die
+     URL-Variante unten (dort wird der Standort per „Aktuellen Ort abrufen“ eingesetzt).
+5. Nach **Menü „Ende“** kommt nichts mehr. Alte Aktionen wie „Text“,
+   „Variable konfigurieren“, „URL“ und „URLs öffnen“ löschen.
 
 Die URL-Variante unten ist die Alternative, falls die Aktion nicht passt.
 
