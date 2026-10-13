@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <style>{{ style_css | safe }}</style>
+  {% include "_libs.html" %}
+</head>
+<body>
+<div class="layout">
+  <nav class="toc" id="toc"></nav>
+  <article class="notes" id="notes"></article>
+</div>
+<script type="application/json" id="markdown">{{ markdown_json | safe }}</script>
+<script>{{ render_js | safe }}</script>
+<script>
+  (async () => {
+    const notes = document.getElementById("notes");
+    const markdown = JSON.parse(document.getElementById("markdown").textContent);
+    await MitschriebRender.renderNotes(notes, markdown);
+    MitschriebRender.buildToc(notes, document.getElementById("toc"));
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mitschrieb</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% include "_libs.html" %}
+</head>
+<body>
+<header class="top"><h1><a href="/">🎓 Vorlesungs-Mitschrieb</a></h1></header>
+<div class="layout">
+  <nav class="toc" id="toc"></nav>
+  <div style="min-width:0">
+    <div class="toolbar" id="toolbar" hidden>
+      <button type="button" onclick="window.print()">🖨 Drucken / PDF</button>
+      <a class="button" href="/mitschrieb/{{ note_id }}/export.html">⬇ HTML</a>
+      <a class="button" href="/api/mitschriebe/{{ note_id }}/dateien/mitschrieb.md?download=1">⬇ Markdown</a>
+      <a class="button" id="transcript-link" href="/api/mitschriebe/{{ note_id }}/dateien/transkript.txt" target="_blank">📄 Transkript</a>
+      <button type="button" id="delete" class="danger">🗑 Löschen</button>
+    </div>
+
+    <div class="card no-print" id="progress-card" hidden>
+      <div id="progress-label">Wird verarbeitet …</div>
+      <progress id="progress" max="1" value="0"></progress>
+      <p class="muted" id="progress-hint"></p>
+    </div>
+
+    <div class="card error no-print" id="error-card" hidden></div>
+
+    <audio id="audio" controls hidden class="no-print" style="width:100%;margin-bottom:16px"></audio>
+
+    <article class="notes" id="notes"><p class="muted">Lade …</p></article>
+
+    <details class="extra card no-print" id="regenerate-box" hidden>
+      <summary>Mitschrieb neu erstellen</summary>
+      <p class="muted">Das Transkript wird wiederverwendet, nur der Mitschrieb wird neu geschrieben.</p>
+      <label for="regenerate-extra">Besondere Wünsche</label>
+      <textarea id="regenerate-extra" placeholder="z. B. Kürzer, mehr Tabellen, Formeln herleiten"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button type="button" class="primary" id="regenerate">Neu erstellen</button>
+      </div>
+    </details>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='render.js') }}"></script>
+<script>window.NOTE_ID = {{ note_id | tojson }};</script>
+<script src="{{ url_for('static', filename='view.js') }}"></script>
+</body>
+</html>

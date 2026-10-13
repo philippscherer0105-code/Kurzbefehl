@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vorlesungs-Mitschrieb</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top"><h1><a href="/">🎓 Vorlesungs-Mitschrieb</a></h1></header>
+<main>
+  <div id="recovery" class="notice" hidden>
+    Es gibt eine unterbrochene Aufnahme (<span id="recovery-length"></span>).
+    <button type="button" id="recovery-use">Wiederherstellen</button>
+    <button type="button" id="recovery-discard" class="danger">Verwerfen</button>
+  </div>
+
+  <form id="form" class="card">
+    <h2>1. Vorlesung aufnehmen</h2>
+    <div class="recorder">
+      <button type="button" id="rec-start" class="record">● Aufnahme starten</button>
+      <button type="button" id="rec-pause" hidden>❚❚ Pause</button>
+      <button type="button" id="rec-stop" hidden>■ Beenden</button>
+      <span id="rec-dot" class="dot" hidden></span>
+      <span class="timer" id="rec-time">0:00:00</span>
+      <div class="level"><div id="rec-level"></div></div>
+    </div>
+    <p class="muted" id="rec-info">
+      Lege das Gerät möglichst nah an die Lautsprecher bzw. den Dozierenden. Die Aufnahme wird
+      laufend im Browser zwischengespeichert, falls der Tab abstürzt. Lass diesen Tab während der
+      Vorlesung geöffnet.
+    </p>
+    <audio id="rec-preview" controls hidden style="width:100%"></audio>
+
+    <details style="margin-top:12px">
+      <summary>… oder vorhandene Datei verwenden</summary>
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label for="audio-file">Audio-/Videodatei (mp3, m4a, wav, webm, mp4 …)</label>
+          <input type="file" id="audio-file" accept="audio/*,video/*">
+        </div>
+        <div>
+          <label for="transcript-file">Fertiges Transkript (.txt)</label>
+          <input type="file" id="transcript-file" accept=".txt,text/plain">
+        </div>
+      </div>
+    </details>
+
+    <h2 style="margin-top:24px">2. Angaben</h2>
+    <div class="grid">
+      <div><label for="title">Titel / Thema</label><input type="text" id="title" placeholder="z. B. Lineare Regression"></div>
+      <div><label for="course">Fach</label><input type="text" id="course" placeholder="z. B. Statistik II"></div>
+      <div><label for="date">Datum</label><input type="date" id="date"></div>
+      <div>
+        <label for="language">Sprache der Vorlesung</label>
+        <select id="language">
+          <option value="de">Deutsch</option>
+          <option value="en">Englisch</option>
+          <option value="">Automatisch erkennen</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div>
+        <label for="slides">Folien als PDF (optional, verbessert Fachbegriffe & Formeln)</label>
+        <input type="file" id="slides" accept="application/pdf">
+      </div>
+      <div>
+        <label for="extra">Besondere Wünsche (optional)</label>
+        <textarea id="extra" placeholder="z. B. Mehr Beispiele, Formeln herleiten, Fokus auf Klausurthemen"></textarea>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:20px">
+      <button type="submit" class="primary" id="submit">Mitschrieb erstellen</button>
+      <span id="status" class="muted"></span>
+    </div>
+  </form>
+
+  <section class="card">
+    <h2>Bisherige Mitschriebe</h2>
+    <ul class="list" id="notes-list"><li class="muted">Noch keine Mitschriebe.</li></ul>
+  </section>
+</main>
+<script src="{{ url_for('static', filename='recorder.js') }}"></script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+</html>

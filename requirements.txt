@@ -1,0 +1,5 @@
+anthropic>=1.13
+flask>=3.0
+faster-whisper>=1.2
+# faster-whisper 1.2 ist noch nicht mit PyAV 17+ kompatibel
+av>=11,<17
