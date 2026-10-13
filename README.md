@@ -12,7 +12,43 @@ mit der fertig eingetragenen Verbindung öffnet.
 
 ---
 
-## Einrichtung (ca. 5 Minuten)
+## ⭐ Empfohlen: mit den eingebauten DB-Navigator-Aktionen
+
+Der DB Navigator bringt eigene Kurzbefehl-Aktionen mit (in der Aktionssuche
+„DB Navigator“ eingeben). Damit braucht es keinen Link und keine URL-Codierung.
+
+**Aufbau:**
+
+1. **Aus Menü auswählen** „Wohin geht's?“ → `🎓 Zur DHBW` / `🏠 Heimweg` / `📍 Vom aktuellen Standort`
+2. **🎓 Zur DHBW**
+   - DB Navigator → **Haltestellen suchen** → `Laupheim West`
+   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Start`
+   - DB Navigator → **Haltestellen suchen** → `Hochschule Friedrichshafen`
+   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Ziel`
+3. **🏠 Heimweg**: wie oben, nur Start und Ziel vertauscht
+4. **📍 Vom aktuellen Standort**
+   - DB Navigator → **Haltestellen in der Nähe**
+   - **Objekt aus Liste abrufen** → *Erstes Objekt* → **Variable konfigurieren** `Start`
+     (also die nächste Haltestelle bei dir)
+   - verschachteltes **Aus Menü auswählen** „Wohin?“ → `🏠 Nach Hause` / `🎓 Zur DHBW`,
+     darin jeweils **Haltestellen suchen** → **Erstes Objekt** → **Variable konfigurieren** `Ziel`
+5. Nach **Menü „Ende“**: DB Navigator → **Reiseauskunft**
+   - Bei *Start* (bzw. *Von*) die Variable `Start` einsetzen, bei *Ziel* (bzw. *Nach*) die Variable `Ziel`
+   - Unter dem Pfeil `>` in der Aktion gibt es evtl. noch Optionen wie Zeit oder
+     „App öffnen“ – so einstellen, dass die App mit der Suche aufgeht.
+
+**Hinweis:** Wie die Felder in „Reiseauskunft“ genau heißen, steht unter dem ⓘ neben
+der Aktion. Falls du dort Text direkt eintippen kannst, kannst du dir die Schritte
+„Haltestellen suchen“ und „Erstes Objekt“ sparen und einfach
+`Laupheim West` / `Hochschule Friedrichshafen` reinschreiben.
+
+Die URL-Variante unten ist die Alternative, falls die Aktion nicht passt.
+
+---
+
+## Alternative: per Link (URL)
+
+### Einrichtung (ca. 5 Minuten)
 
 Öffne die App **Kurzbefehle** → **+** (neuer Kurzbefehl) → Name: `Bahn`.
 Füge dann die Aktionen in dieser Reihenfolge hinzu (über die Suchleiste unten).
