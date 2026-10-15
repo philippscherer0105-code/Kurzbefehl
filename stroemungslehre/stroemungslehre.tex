@@ -1,0 +1,1438 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[ngerman]{babel}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[a4paper,left=2cm,right=4.3cm,top=2.3cm,bottom=2.4cm,headheight=14pt]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.markings}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs,array,tabularx,enumitem,siunitx,titlesec,fancyhdr,caption}
+\usepackage[hidelinks]{hyperref}
+\sisetup{locale=DE}
+
+\definecolor{acc}{RGB}{31,95,170}
+\definecolor{acc2}{RGB}{205,85,40}
+\definecolor{acc3}{RGB}{30,140,90}
+\definecolor{merk}{RGB}{225,145,25}
+\definecolor{wasser}{RGB}{214,232,250}
+
+\titleformat{\section}{\sffamily\Large\bfseries\color{acc}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1em}{0.4em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small Strömungslehre -- Lernskript zur Prüfung}
+\fancyhead[R]{\sffamily\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\captionsetup{font={small,sf},labelfont=bf,skip=4pt}
+\setlist{itemsep=1pt,topsep=3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlength{\emergencystretch}{2em}
+
+\newtcolorbox{formel}[1][]{colback=acc!5,colframe=acc!75!black,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,fonttitle=\sffamily\small\bfseries,#1}
+\newtcolorbox{merke}[1][Merke]{colback=merk!9,colframe=merk!85!black,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,title={#1},fonttitle=\sffamily\small\bfseries}
+
+\tikzset{>=Stealth,
+  wand/.style={line width=1.2pt},
+  fluid/.style={fill=wasser},
+  pf/.style={->,line width=1.1pt},
+  mass/.style={<->,thin},
+  lbl/.style={font=\small}}
+
+\newcommand{\abb}[1]{\captionof{figure}{#1}}
+\newenvironment{bild}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}{\end{minipage}\par\medskip}
+\newcommand{\dd}{\mathrm{d}}
+
+\begin{document}
+
+\begin{center}
+{\sffamily\bfseries\huge\color{acc} Grundlagen der Strömungslehre}\\[4pt]
+{\sffamily\Large Lernskript zur Prüfung}\\[6pt]
+{\small Zusammenfassung des Vorlesungsskripts von Prof.\ Dr.-Ing.\ G.\ Thieleke (HS Ravensburg-Weingarten)}
+\end{center}
+
+\vspace{4pt}
+Pro Kapitel: Kernaussage, die Formeln, die du können musst, und die wichtigsten Skizzen. Am Ende stehen die Lösungswege der Übungsaufgaben und ein Spickzettel. Der breite rechte Rand ist Platz für deine Notizen.
+
+\tableofcontents
+
+%=====================================================================
+\section{Prüfungs-Fahrplan}
+
+Fast jede Aufgabe läuft auf drei Werkzeuge hinaus: \textbf{Kontinuität} (Masse), \textbf{Bernoulli bzw.\ Energiebilanz} (Energie) und \textbf{Impulssatz} (Kraft). Entscheidend ist, das richtige Werkzeug zu wählen und die Bilanzpunkte geschickt zu legen.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Situation in der Aufgabe} & \textbf{Werkzeug} \\ \midrule
+Fluid ruht; Druck in einer Tiefe, Kraft auf eine Wand & Hydrostatik: $p = p_0 + \rho g t$, $F = p_S A$ \\
+Querschnitt ändert sich; $v$ oder $A$ gesucht & Kontinuität: $v_1 A_1 = v_2 A_2$, \ $\dot m = \rho v A$ \\
+Druck $\leftrightarrow$ Geschwindigkeit $\leftrightarrow$ Höhe, verlustfrei & Bernoulli: $\frac{p}{\rho} + \frac{v^2}{2} + g z = \text{const}$ \\
+Rohrleitung mit Verlusten, Pumpe oder Turbine & erweiterte Bernoulli: $\ldots \pm Y^* + \sum \zeta_i \frac{v_i^2}{2}$ \\
+Kraft auf Wand, Düse, Krümmer; Mischungsverlust & Impulssatz: Kontrollfläche legen, Krafteck schließen \\
+Drehmoment, Leistung eines Laufrads & Impulsmomentensatz (Euler'sche Turbinengleichung) \\
+Gas mit $v > \SI{70}{m/s}$, Düse, Ausströmen & Energiesatz mit Enthalpie: $\frac{v^2}{2} + c_p T = \text{const}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Vorgehen bei jeder Aufgabe}
+\begin{enumerate}
+\item Skizze machen, Bezugsniveau $z=0$ und Punkte 1, 2, \ldots{} festlegen. Punkte dorthin, wo viel bekannt ist: freie Oberfläche ($p = p_0$, $v \approx 0$), freier Strahl ($p = p_0$).
+\item Kontinuität aufschreiben.
+\item Energie: Bernoulli (verlustfrei) oder erweitert mit $\zeta$-Verlusten und $\pm Y$.
+\item Kraft oder Mischungsverlust gesucht $\Rightarrow$ Impulssatz mit Kontrollfläche.
+\item Einheiten prüfen.
+\end{enumerate}
+
+\begin{formel}[title={Bernoulli in drei Bezugsformen -- gleiche Aussage, anderer Nenner}]
+\[
+\begin{array}{lll}
+\text{auf die Masse:} & \dfrac{p}{\rho} + \dfrac{v^2}{2} + g z = \text{const} & [\mathrm{m^2/s^2} = \mathrm{J/kg}]\\[10pt]
+\text{auf das Volumen:} & p + \rho\dfrac{v^2}{2} + \rho g z = \text{const} & [\mathrm{Pa}]\\[10pt]
+\text{auf das Gewicht:} & \dfrac{p}{\rho g} + \dfrac{v^2}{2g} + z = \text{const} & [\mathrm{m}]
+\end{array}
+\]
+\end{formel}
+
+%=====================================================================
+\section{Eigenschaften von Fluiden}
+
+\textbf{Kernaussage:} Festkörper reagieren auf Scherung elastisch, Fluide bauen ein Geschwindigkeitsgefälle auf. Ursache ist die Viskosität, also molekularer Impulsaustausch. Fluide werden als \textbf{Kontinuum} behandelt.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+ & Festkörper & Flüssigkeit & Gas \\ \midrule
+Form & definiert & freie Oberfläche & füllt den Raum \\
+kompressibel & -- & nahezu nein & ja \\
+Kennzeichen & Elastizität & Viskosität, tropfbar & Viskosität, nicht tropfbar \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Druck}
+
+In ruhenden Fluiden gibt es nur Normalspannungen, also den Druck. Das Kräftegleichgewicht am Prisma liefert nach dem Grenzübergang: Der Druck ist in einem Punkt in alle Richtungen gleich, er ist ein Skalar.
+
+\begin{bild}
+\begin{tikzpicture}[scale=1.25]
+\coordinate (A) at (0,0); \coordinate (B) at (0,2.4); \coordinate (C) at (1.6,0);
+\fill[wasser] (A)--(B)--(C)--cycle;
+\draw[wand] (A)--(B)--(C)--cycle;
+\draw[pf,acc] (-1.0,1.2)--(-0.03,1.2) node[pos=0,left,black]{$p_x\,\Delta y$};
+\draw[pf,acc] (0.8,-0.9)--(0.8,-0.03) node[pos=0,below,black]{$p_y\,\Delta x$};
+\draw[pf,acc] (1.55,1.7)--(0.82,1.21) node[pos=0,right,black]{$p_s\,\Delta s$};
+\draw[pf,acc3] (0.5,0.95)--(0.5,0.35) node[right,black,lbl]{$f$};
+\node[lbl] at (0.2,1.55) {$\Delta y$};
+\node[lbl] at (1.05,0.18) {$\Delta x$};
+\node[lbl,anchor=west] at (1.25,0.75) {$\Delta s$};
+\end{tikzpicture}
+\abb{Kräftegleichgewicht am Prisma: Druckkräfte auf die Seiten, Volumenkraft $f$ im Inneren.}
+\end{bild}
+
+\begin{formel}
+\[
+p = \lim_{\Delta A \to 0}\frac{\Delta F}{\Delta A}, \qquad p_x = p_y = p_s = p, \qquad
+\SI{1}{bar} = \SI{e5}{Pa}, \quad \SI{1}{mbar} = \SI{100}{Pa}
+\]
+\end{formel}
+
+\begin{itemize}
+\item Gase: $p$ kann nicht unter null sinken (Vakuum).
+\item Flüssigkeiten: Sinkt $p$ auf den Dampfdruck $p_{va}(T)$, verdampft die Flüssigkeit ohne Wärmezufuhr: \textbf{Kavitation}. Zusammenfallende Blasen zerstören die Wand.
+\end{itemize}
+
+\subsection{Dichte}
+
+\[
+\rho = \frac{m}{V} = \lim_{\Delta V\to 0}\frac{\Delta m}{\Delta V}, \qquad \rho = \rho(p,T), \qquad \rho_{\mathrm{H_2O}} \approx \SI{1000}{kg/m^3}
+\]
+Für Flüssigkeiten meist $\rho = \text{const}$. Für Gase gilt die thermische Zustandsgleichung:
+\[
+\frac{p}{\rho} = R\,T \quad\text{(ideales Gas)}, \qquad \frac{p}{\rho} = z\,R\,T \quad\text{(reales Gas, Realgasfaktor } z\text{)}
+\]
+
+\subsection{Kompressibilität und Schallgeschwindigkeit}
+
+\begin{formel}
+\[
+\frac{\dd V}{V}\,E = -\dd p \quad\Rightarrow\quad \frac{\dd p}{\dd \rho} = \frac{E}{\rho} \quad\Rightarrow\quad
+a = \sqrt{\frac{\dd p}{\dd \rho}} = \sqrt{\frac{E}{\rho}} \qquad\text{Gas: } a = \sqrt{\kappa R T}
+\]
+\end{formel}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Flüssigkeit (10--\SI{20}{\celsius}) & $E$ in \si{N/m^2} & $\rho$ in \si{kg/m^3} & $a$ in \si{m/s} \\ \midrule
+Wasser & \num{2.06e9} & 1000 & 1440 \\
+Rohöl & \num{1.56e9} & 900 & 1310 \\
+Benzin & \num{0.88e9} & 750 & 1080 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Zustandsänderungen von Gasen (Polytrope mit Exponent $n$):
+\[
+\frac{p}{\rho^{\,n}} = \text{const}: \qquad
+n = 0 \text{ isobar}, \quad n = 1 \text{ isotherm}, \quad n = \kappa \text{ isentrop}, \quad n = \infty \text{ isochor}
+\]
+
+\begin{merke}
+Gase dürfen als inkompressibel gerechnet werden, solange $v \ll a$ ist -- für Luft bei Atmosphärendruck bis etwa \SI{70}{m/s}. Luft bei \SI{273}{K}: $a = \SI{332}{m/s}$.
+\end{merke}
+
+\subsection{Viskosität}
+
+An der Wand gilt die \textbf{Haftbedingung}: Die unterste Fluidschicht haftet, $v = 0$ (Grenzschichttheorie, Prandtl). Ideale Fluide vernachlässigen sie.
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.95]
+\draw[wand] (0,0)--(8,0);
+\foreach \x in {0.3,0.6,...,8.0} \draw (\x,0)--(\x-0.22,-0.22);
+\fill[acc!25] (0,2.6) rectangle (8,2.85); \draw[acc,thick] (0,2.6) rectangle (8,2.85);
+\draw[pf,acc] (6.4,3.2)--(7.8,3.2) node[right,black]{$v_0$};
+\node[lbl,anchor=south west,gray] at (0,2.9) {bewegte Platte};
+\draw[thin] (1.2,0)--(1.2,2.6);
+\draw[thick,acc] (1.2,0)--(5.4,2.6);
+\foreach \y in {0.52,1.04,1.56,2.08} \draw[->,thick] (1.2,\y)--({1.2+4.2*\y/2.6},\y);
+\node at (4.45,1.45) {$v(y)$};
+\node[lbl] at (0.95,2.25) {$y$};
+\draw[mass] (-0.35,0)--(-0.35,2.6) node[midway,left]{$h$};
+\node at (6.9,1.25) {$\tau = \eta\,\dfrac{v_0}{h}$};
+\node[lbl,anchor=north west,gray] at (0,-0.3) {feste Wand: $v = 0$ (Haftbedingung)};
+\end{tikzpicture}
+\abb{Couette-Strömung: Das Geschwindigkeitsprofil ist linear, $\tau$ ist im ganzen Spalt gleich.}
+\end{bild}
+
+\begin{formel}[title={Newton'sches Reibungsgesetz}]
+\[
+\tau = \eta\,\frac{\partial v}{\partial y}, \qquad \nu = \frac{\eta}{\rho}
+\]
+$\eta$: dynamische Viskosität in \si{Pa.s} $=$ \si{kg/(m.s)}; \ $\nu$: kinematische Viskosität in \si{m^2/s}.
+\end{formel}
+
+$\eta$ hängt vor allem von der Temperatur ab, kaum vom Druck. Im allgemeinen 3D-Fall gibt es pro Richtung drei Spannungen $\tau_{ij} = -\eta\bigl(\frac{\partial v_j}{\partial x_i} + \frac{\partial v_i}{\partial x_j}\bigr)$; das Minuszeichen bildet die Transportrichtung ab (Impuls fließt vom Schnelleren zum Langsameren).
+
+\textbf{Bild zum Merken:} Zwei Züge fahren nebeneinander und werfen sich Säcke zu. Der schnelle wird gebremst, der langsame beschleunigt -- Impuls wird \emph{quer} zur Fahrtrichtung übertragen. So entsteht $\tau$: durch Austausch, nicht durch \glqq Reibstangen\grqq{} zwischen Molekülen.
+
+Analogie der Transportgesetze: Wärmeleitung (Fourier, $\dot q = -\lambda\,\partial T/\partial x$), Diffusion (Fick, $\dot m = -D\,\partial c/\partial x$), Impuls (Newton, $\tau = -\eta\,\partial v/\partial x$).
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.95]
+\draw[->] (0,0)--(6.2,0) node[below left]{$\partial v/\partial y$};
+\draw[->] (0,0)--(0,4.6) node[left]{$|\tau|$};
+\draw[thick] (0,1.2)--(5,4.2) node[right,lbl]{Bingham: $\tau = \tau_f + \eta\,\frac{\partial v}{\partial y}$};
+\draw[thick,dashed] (0,0) .. controls (1.2,2.4) .. (5,3.3) node[right,lbl]{pseudoplastisch};
+\draw[very thick,acc] (0,0)--(5,2.5) node[right,lbl,black]{\textbf{Newton} (Flüssigkeit, Gas)};
+\draw[thick,densely dotted] (0,0) .. controls (3,0.3) .. (5,1.7) node[right,lbl]{dilatant};
+\node[left] at (0,1.2) {$\tau_f$};
+\end{tikzpicture}
+\abb{Fließkurven. In der Vorlesung zählen nur Newton'sche Fluide: Gerade durch den Ursprung mit Steigung $\eta$.}
+\end{bild}
+
+\textbf{Beispiel Glasplatte:} Platte ($A = \SI{0.01}{m^2}$) gleitet mit $v_0 = \SI{0.1}{m/s}$ auf einem Luftpolster der Dicke $h = \SI{0.1}{mm}$, $\eta = \SI{1.795e-5}{Pa.s}$:
+\[
+S = \tau A = \eta\,\frac{v_0}{h}\,A = 1{,}795\cdot10^{-5}\cdot\frac{0{,}1}{10^{-4}}\cdot 0{,}01\ \mathrm{N} \approx \SI{1.8e-4}{N}
+\]
+
+\subsection{Wichtige Begriffe}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X@{}}
+\toprule
+laminar & geschichtet, keine Querbewegung, nur molekularer Impulsaustausch \\
+turbulent & regellose Quer- und Längsschwankungen, starke Durchmischung, zusätzliche scheinbare Reibung \\
+stationär & $\vec v = \vec v(\vec r)$, $\partial/\partial t = 0$; Strom-, Bahn- und Streichlinien sind identisch \\
+instationär & $\vec v = \vec v(\vec r, t)$ \\
+Bahnlinie & Weg eines einzelnen Teilchens (Lagrange) \\
+Stromlinie & Tangente zeigt überall in Richtung von $\vec v$ (Euler) \\
+Streichlinie & alle Teilchen, die einen festen Ort passiert haben (z.\,B. Rauchfaden) \\
+Stromfaden / Stromröhre & Bündel von Stromlinien; durch den Mantel fließt nichts \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.95]
+\draw[->] (0,0)--(7.8,0) node[below left]{$t$};
+\draw[->] (0,0)--(0,3.4) node[left]{$v(t)$};
+\draw[acc,thin] plot coordinates {(0.00,1.88) (0.12,2.16) (0.24,1.99) (0.36,1.86) (0.48,1.49) (0.60,1.60) (0.72,2.26) (0.84,2.35) (0.96,2.68) (1.08,2.52) (1.20,2.49) (1.32,2.38) (1.44,1.48) (1.56,2.07) (1.68,2.27) (1.80,2.39) (1.92,1.47) (2.04,0.90) (2.16,0.94) (2.28,1.15) (2.40,1.63) (2.52,1.76) (2.64,2.09) (2.76,1.76) (2.88,2.00) (3.00,2.18) (3.12,1.81) (3.24,2.66) (3.36,2.65) (3.48,2.93) (3.60,2.28) (3.72,1.83) (3.84,1.74) (3.96,1.80) (4.08,2.16) (4.20,2.21) (4.32,1.92) (4.44,1.52) (4.56,1.48) (4.68,2.24) (4.80,1.78) (4.92,1.98) (5.04,2.18) (5.16,1.44) (5.28,1.68) (5.40,2.40) (5.52,1.33) (5.64,1.45) (5.76,1.63) (5.88,1.41) (6.00,1.87) (6.12,1.89) (6.24,1.28) (6.36,1.94) (6.48,2.26) (6.60,2.58) (6.72,3.00) (6.84,2.76) (6.96,2.51) (7.08,1.72) (7.20,2.11)};
+\draw[thick,dashed] (0,1.95)--(7.3,1.95) node[right]{$\bar v$};
+\draw[mass,acc2] (3.48,1.95)--(3.48,2.93) node[midway,right,black]{$v'$};
+\end{tikzpicture}
+\abb{Turbulente Geschwindigkeit an einem festen Ort: zeitlicher Mittelwert $\bar v$ plus regellose Schwankung $v'$.}
+\end{bild}
+
+\[
+\vec v = \bar{\vec v} + \vec v\,' \qquad \bar{\vec v} = \frac{1}{t_1}\int_0^{t_1}\vec v\,\dd t
+\]
+\glqq Stationär\grqq{} bezieht sich bei turbulenter Strömung nur auf $\bar{\vec v}$. Außerdem hängt \glqq stationär\grqq{} vom Koordinatensystem ab: Ein Flugzeug mit konstanter Geschwindigkeit ist im mitfliegenden System stationär, im erdfesten instationär.
+
+\textbf{Lagrange} (teilchenfest): Man folgt dem Teilchen, $\vec r(t) = \vec r_0 + \int \vec v\,\dd t$. \
+\textbf{Euler} (ortsfest): Feld $\vec v(x,y,z,t)$ an festen Orten -- in der Strömungslehre üblich.
+
+\textbf{Lösbarkeit:} 6 Unbekannte ($v_x, v_y, v_z, p, \rho, T$) und 6 Gleichungen (Kontinuität 1, Impuls 3, Energie 1, Zustandsgleichung 1). Von leicht nach schwer: Hydrostatik $\to$ Aerostatik $\to$ Hydromechanik $\to$ Aerodynamik.
+
+%=====================================================================
+\section{Grundgleichungen der Strömungsmechanik}
+
+\textbf{Kernaussage:} Aus Masse- und Impulserhaltung am Stromfaden folgen Kontinuitätsgleichung und Euler-Gleichung. Integriert ergibt sich die Energiebilanz -- die Grundlage von Bernoulli.
+
+\subsection{Substantielle Beschleunigung}
+
+Ein Teilchen wird beschleunigt, weil sich das Feld mit der Zeit ändert (\emph{lokal}) und weil es an einen Ort mit anderer Geschwindigkeit wandert (\emph{konvektiv}):
+\begin{formel}
+\[
+\frac{D\vec v}{Dt} = \underbrace{\frac{\partial \vec v}{\partial t}}_{\text{lokal}} + \underbrace{v_x\frac{\partial \vec v}{\partial x} + v_y\frac{\partial \vec v}{\partial y} + v_z\frac{\partial \vec v}{\partial z}}_{\text{konvektiv}}
+\]
+\[
+\text{Stromfaden: }\quad
+\frac{\dd v}{\dd t} = \frac{\partial v}{\partial t} + v\frac{\partial v}{\partial s} = \frac{\partial v}{\partial t} + \frac{\partial (v^2/2)}{\partial s}
+\]
+\end{formel}
+Stationär ist $\partial v/\partial t = 0$, aber ein Teilchen kann trotzdem beschleunigt werden (z.\,B. in einer Düse) -- nur nach dem Ort.
+
+\subsection{Kontinuitätsgleichung (Massenerhaltung)}
+
+Masse verschwindet nicht und entsteht nicht. Bilanz am Würfel $\dd V = \dd x\,\dd y\,\dd z$: einströmende minus ausströmende Masse gleich Speicherung.
+\[
+\frac{\partial \rho}{\partial t} + \operatorname{div}(\rho\vec v) = 0
+\qquad\Leftrightarrow\qquad
+\frac{\partial\rho}{\partial t} + \rho\operatorname{div}\vec v + \vec v\cdot\operatorname{grad}\rho = 0
+\]
+
+\begin{center}
+\renewcommand{\arraystretch}{1.55}
+\begin{tabular}{@{}cll@{}}
+\toprule
+Fall & Bedingungen & Kontinuitätsgleichung \\ \midrule
+1 & 3D, instationär, kompressibel & $\dfrac{\partial\rho}{\partial t} + \operatorname{div}(\rho\vec v) = 0$ \\
+2 & 3D, stationär, kompressibel & $\operatorname{div}(\rho\vec v) = 0$ \\
+3 & 3D, stationär, inkompressibel & $\operatorname{div}\vec v = 0$ \ (quellenfrei) \\
+4 & 2D, stationär, inkompressibel & $\dfrac{\partial v_x}{\partial x} + \dfrac{\partial v_y}{\partial y} = 0$ \\
+5 & 1D, stationär, kompressibel & $\rho\,v\,A = \text{const}$ \\
+6 & 1D, stationär, inkompressibel & $v\,A = \text{const}$ \\
+7 & 1D, instationär, inkompressibel & $v_1(t)\,A_1 = v_2(t)\,A_2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.92]
+\fill[wasser] (0,2) .. controls (3,2) and (4.5,0.9) .. (8,0.9) -- (8,-0.9) .. controls (4.5,-0.9) and (3,-2) .. (0,-2) -- cycle;
+\draw[wand] (0,2) .. controls (3,2) and (4.5,0.9) .. (8,0.9);
+\draw[wand] (0,-2) .. controls (3,-2) and (4.5,-0.9) .. (8,-0.9);
+\draw[thin,gray] (0,1) .. controls (3,1) and (4.5,0.45) .. (8,0.45);
+\draw[thin,gray] (0,-1) .. controls (3,-1) and (4.5,-0.45) .. (8,-0.45);
+\draw[thin,dashed] (0,0)--(8,0) node[pos=0.55,above,lbl]{$s$};
+\draw[acc,thick,fill=acc!20,fill opacity=0.6] (0,0) ellipse (0.35 and 2);
+\draw[acc,thick,fill=acc!20,fill opacity=0.6] (8,0) ellipse (0.16 and 0.9);
+\draw[pf,acc] (-1.4,0)--(-0.4,0) node[pos=0,above right,black]{$v_1$};
+\draw[pf,acc] (8.25,0)--(10.0,0) node[pos=0.5,above,black]{$v_2$};
+\node[above] at (0,2.05) {$A_1$};
+\node[above] at (8,0.95) {$A_2$};
+\node[lbl,gray,anchor=south] at (3.3,2.0) {Mantel: kein Durchfluss};
+\end{tikzpicture}
+\abb{Stromfaden: Durch $A_1$ und $A_2$ geht derselbe Massenstrom; der engere Querschnitt wird schneller durchströmt.}
+\end{bild}
+
+\begin{formel}[title={Kontinuität am Stromfaden}]
+\[
+\frac{\partial(\rho A)}{\partial t} + \frac{\partial(\rho v A)}{\partial s} = 0
+\qquad\overset{\text{stationär}}{\Longrightarrow}\qquad
+\dot m = \rho_1 v_1 A_1 = \rho_2 v_2 A_2
+\]
+\[
+\rho = \text{const:}\qquad v_1 A_1 = v_2 A_2
+\]
+\end{formel}
+Folge: Eine Stromröhre kann bei stationärer Strömung nie im Inneren des Fluids beginnen oder enden.
+
+\subsection{Euler-Gleichung am Stromfaden}
+
+Newton für das Element $\dd m = \rho A\,\dd s$: Masse mal Beschleunigung gleich Druck-, Gewichts- und Reibungskraft.
+
+\begin{bild}
+\begin{tikzpicture}[scale=1.0]
+\draw[->] (-4.6,-1.9)--(-4.6,2.3) node[left]{$z$};
+\begin{scope}[rotate=20]
+\draw[thin,dashed,gray] (-3.4,0)--(3.9,0);
+\draw[->,thin,gray] (3.2,0)--(3.95,0) node[right,black]{$s$};
+\fill[acc!8] (-2,-0.65) rectangle (2,0.65);
+\draw[thick] (-2,-0.65) rectangle (2,0.65);
+\draw[pf,acc2] (-3.2,0)--(-2.04,0) node[pos=0,below left,black]{$p\,A$};
+\draw[pf,acc2] (3.2,0)--(2.04,0) node[pos=0,below right,black]{$p + \frac{\partial p}{\partial s}\dd s$};
+\draw[pf,acc3] (1.3,0.9)--(-1.3,0.9) node[pos=0.5,above,black,lbl,yshift=3pt]{Reibung $\frac{\partial F_l}{\partial s}\,\dd s$};
+
+\end{scope}
+\draw[pf,acc] (0,0)--(0,-1.9) node[pos=0.85,left,black]{$g\,\dd m$};
+\draw[thin,dashed] (0,0)--(2.4,0);
+\draw[thin] (2.1,0) arc[start angle=0,end angle=20,radius=2.1];
+\node[lbl] at (2.35,0.35) {$\alpha$};
+\end{tikzpicture}
+\abb{Kräfte am Stromfadenelement der Länge $\dd s$ und Masse $\dd m = \rho A\,\dd s$. Die Gewichtskomponente in $s$-Richtung ist $g\,\dd m\sin\alpha$ mit $\sin\alpha = \partial z/\partial s$.}
+\end{bild}
+
+\[
+F_p = -\frac{\partial p}{\partial s}\,\dd s\,A, \qquad
+F_V = -\rho g A\,\dd s\,\sin\alpha = -\rho g A\,\dd s\,\frac{\partial z}{\partial s}, \qquad
+F_l = -\frac{\partial F_l}{\partial s}\,\dd s
+\]
+
+\begin{formel}[title={Euler'sche Gleichung (kompressibel, reibungsbehaftet, instationär)}]
+\[
+\frac{\partial v}{\partial t} + \frac{\partial (v^2/2)}{\partial s} + \frac{1}{\rho}\frac{\partial p}{\partial s} + g\frac{\partial z}{\partial s} + \frac{1}{\rho A}\frac{\partial F_l}{\partial s} = 0
+\]
+\end{formel}
+
+\subsection{Energiebilanz (stationär)}
+
+Mal $\dd s$ und stationär ($\partial/\partial t = 0$) ergibt totale Differentiale:
+\[
+\dd\!\left(\frac{v^2}{2}\right) + \frac{\dd p}{\rho} + g\,\dd z + \dd e_l = 0
+\]
+Mit $\frac{\dd p}{\rho} = \dd\bigl(\frac{p}{\rho}\bigr) - p\,\dd\bigl(\frac{1}{\rho}\bigr)$ integriert von 1 nach 2:
+\[
+\left(\frac{v_2^2}{2} + \frac{p_2}{\rho_2} + g z_2\right) - \left(\frac{v_1^2}{2} + \frac{p_1}{\rho_1} + g z_1\right) - \int_1^2 p\,\dd\!\left(\frac{1}{\rho}\right) + \Delta e_{l,1-2} = 0
+\]
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+$v^2/2$ & kinetische Energie \\
+$p/\rho$ & Druckenergie (Verschiebearbeit) \\
+$g z$ & Lageenergie \\
+$\Delta e_l$ & Reibungsarbeit, wird zu Wärme; Entropie steigt: $T\,\dd s_e = \dd e_l$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Mit der inneren Energie $u_e$ und der Enthalpie $h_e = u_e + p/\rho$ folgt der Energiesatz, erweitert um Wärme $q_a$ und Arbeit $Y_a$:
+\begin{formel}[title={Energiesatz}]
+\[
+h_{e1} + \frac{v_1^2}{2} + g z_1 = h_{e2} + \frac{v_2^2}{2} + g z_2 \pm q_a \pm Y_a
+\]
+$+Y_a$: Energie wird entzogen (\textbf{Turbine}); $-Y_a$: Energie wird zugeführt (\textbf{Pumpe, Verdichter}).
+\end{formel}
+
+\subsection{Enthalpie-Entropie-Diagramm}
+
+Verluste erscheinen im $h_e$-$s_e$-Diagramm als Entropiezunahme: Die reale Zustandslinie läuft nach rechts. Daraus folgen die Wirkungsgrade ($^*$ = verlustfreier Idealwert):
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.95]
+\draw[->] (0,0)--(6.4,0) node[below left]{$s_e$};
+\draw[->] (0,0)--(0,5.4) node[left]{$h_e$};
+\draw[thick,gray] (0.5,0.7)--(5.8,1.9) node[right,black]{$p_S$};
+\draw[thick,gray] (0.5,3.4)--(5.8,4.6) node[right,black]{$p_D$};
+\coordinate (S) at (1.6,0.95); \coordinate (Di) at (1.6,3.65); \coordinate (D) at (3.0,3.97);
+\fill (S) circle(1.6pt) node[below right]{S};
+\draw[pf,dashed] (S)--(Di) node[pos=0.55,sloped,above,lbl]{isentrop};
+\draw[pf,acc2] (S)--(D) node[pos=0.55,sloped,below,lbl]{real};
+\fill (D) circle(1.6pt) node[above]{D};
+\draw[thin,densely dotted] (Di)--(0.8,3.65); \draw[thin,densely dotted] (S)--(0.8,0.95);
+\draw[mass] (0.95,0.95)--(0.95,3.65) node[midway,left]{$Y_P^*$};
+\draw[thin,densely dotted] (D)--(4.4,3.97); \draw[thin,densely dotted] (S)--(4.4,0.95);
+\draw[mass,acc2] (4.25,0.95)--(4.25,3.97) node[midway,right,black]{$Y_{aP}$};
+\end{tikzpicture}
+\abb{Pumpe im $h_e$-$s_e$-Diagramm (kinetische und Lageenergie hier weggelassen): Real muss mehr Energie $Y_{aP}$ zugeführt werden als verlustfrei nötig wäre ($Y_P^*$).}
+\end{bild}
+
+\[
+\begin{aligned}
+&\text{Düse / Konfusor:} && \eta = \frac{v_2^2/2}{v_2^{*2}/2} = \frac{v_2^2/2}{v_1^2/2 + h_{e1} - h_{e2}^*}
+&\qquad &\text{Diffusor:} && \eta_m = \frac{(p_2-p_1)/\rho}{(v_1^2-v_2^2)/2}\\[6pt]
+&\text{Turbine:} && \eta_i = \frac{Y_{aT}}{Y_T^*}
+&&\text{Pumpe:} && \eta_i = \frac{Y_P^*}{Y_{aP}}
+\end{aligned}
+\]
+
+\begin{merke}
+Turbine: das Reale steht oben (man bekommt weniger heraus). Pumpe: das Ideale steht oben (man muss mehr hineinstecken). $\eta < 1$ immer.
+\end{merke}
+
+\textbf{Beispiel Pumpe gegen geschlossenen Schieber:} Die ganze Antriebsleistung $P_A$ erwärmt das eingeschlossene Volumen $V$:
+\[
+\Delta t = \frac{c_p\,\rho\,V\,\Delta T}{P_A}, \qquad Q_{\min} = \frac{P_A}{c_p\,\rho\,\Delta T}
+\]
+$Q_{\min}$ ist der Mindestdurchfluss im Dauerbetrieb, damit sich das Wasser um höchstens $\Delta T$ erwärmt.
+
+%=====================================================================
+\section{Statik der Fluide}
+
+\textbf{Kernaussage:} Ohne Bewegung bleiben von der Energiegleichung nur Druck- und Lageglied:
+\[
+\frac{\dd p}{\rho} + g\,\dd z = 0
+\]
+
+\subsection{Barometrische Höhenformel (Gas)}
+
+Trick: \textbf{Trennung der Variablen.} $\rho$ hängt von $p$ ab, also erst $\rho(p)$ einsetzen, dann integrieren. Isotherm gilt $p/\rho = p_0/\rho_0$, also $\rho = \frac{\rho_0}{p_0}\,p$:
+\[
+\frac{p_0}{\rho_0}\int_{p_0}^{p}\frac{\dd p}{p} = -g\int_{z_0}^{z}\dd z
+\quad\Rightarrow\quad
+\ln\frac{p}{p_0} = -\frac{g\,\rho_0}{p_0}\,(z - z_0)
+\]
+
+\begin{minipage}{0.62\linewidth}
+\begin{formel}[title={Barometrische Höhenformel}]
+\[
+\text{isotherm:}\quad p(z) = p_0\,\exp\!\left(-\frac{g\,\rho_0}{p_0}(z - z_0)\right)
+\]
+\[
+\text{polytrop:}\quad p = p_0\left[1 - \frac{n-1}{n}\,\frac{g\rho_0}{p_0}(z - z_0)\right]^{\frac{n}{n-1}}
+\]
+\end{formel}
+\end{minipage}\hfill
+\begin{minipage}{0.35\linewidth}
+\centering
+\begin{tikzpicture}[scale=0.72]
+\fill[gray!25] (0,-0.25) rectangle (4.6,0);
+\draw[->] (0,0)--(4.8,0) node[below left]{$p$};
+\draw[->] (0,0)--(0,4.2) node[left]{$z$};
+\draw[very thick,acc,domain=0:3.8,samples=40] plot ({4.2*exp(-0.42*\x)},\x);
+\draw[thick,dashed,gray] (1.2,0)--(1.2,3.9) node[above,lbl,black]{$T$ = const};
+\node[below] at (4.2,-0.25) {$p_0$};
+\end{tikzpicture}
+\abb{Isotherme Atmosphäre.}
+\end{minipage}
+
+Für die untere Atmosphäre (bis ca.\ \SI{12}{km}) passt $n \approx 0{,}8$. Stabile Schichtung nur für $n \le \kappa$. Anwendung: Höhenmesser (misst Druck, rechnet Höhe).
+
+\subsection{Hydrostatik ($\rho = \text{const}$)}
+
+\begin{formel}
+\[
+\frac{p}{\rho} + g z = \text{const}
+\qquad\Rightarrow\qquad
+p = p_0 + \rho g\,(z_0 - z) = p_0 + \rho g\,t
+\]
+$t$ = Tiefe unter der Oberfläche.
+\end{formel}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.95]
+% Behälter
+\fill[wasser] (0,0) rectangle (3,3);
+\draw[wand] (0,3.6)--(0,0)--(3,0)--(3,3.6);
+\draw[acc,thick] (0,3)--(3,3);
+\node[above] at (1.5,3.0) {$p_0$};
+\fill (2.1,1.2) circle (1.8pt) node[right]{$P$};
+\draw[thin,dashed] (0.45,1.2)--(2.05,1.2);
+\draw[mass] (0.45,3)--(0.45,1.2) node[midway,right]{$t$};
+\node at (1.5,-0.55) {$p = p_0 + \rho g t$};
+% geneigte Wand
+\begin{scope}[xshift=5.2cm]
+\fill[wasser] (0,0)--(0,3)--(4,3)--(3,0)--cycle;
+\draw[acc,thick] (0,3)--(4,3);
+\draw[wand] (0,0)--(3,0);
+\draw[wand] (4.2,3.6)--(2.9,-0.3);
+\foreach \t in {0.05,0.15,...,1.0} \draw[thin] ($(4.2,3.6)!\t!(2.9,-0.3)$)--++(0.3,0.1);
+\draw[line width=3.5pt,acc2!70] (3.65,1.95)--(3.25,0.75);
+\fill (3.45,1.35) circle (1.8pt);
+\node[right,lbl] at (3.62,1.42) {$S$};
+\fill[acc2] (3.385,1.155) circle (1.8pt);
+\node[right,lbl] at (3.55,1.05) {$D$};
+\draw[pf,acc] (2.25,1.55)--(3.35,1.17) node[pos=0,left,black]{$F$};
+\draw[thin,dashed] (1.2,1.35)--(3.4,1.35);
+\draw[mass] (1.2,3)--(1.2,1.35) node[midway,left]{$|z_S|$};
+\node[above] at (2.0,3.0) {$p_0$};
+\node at (2.0,-0.55) {$F = \rho g\,|z_S|\,A$, Angriff in $D$};
+\end{scope}
+\end{tikzpicture}
+\abb{Links: Der Druck hängt nur von der Tiefe ab. Rechts: Kraft auf eine geneigte Fläche; gerechnet mit dem Druck im Schwerpunkt $S$, Angriff im tieferen Druckpunkt $D$.}
+\end{bild}
+
+\subsubsection{Druckkraft auf geneigte ebene Flächen}
+
+Die Kraft ist der Überdruck im \textbf{Flächenschwerpunkt $S$} mal Fläche. Sie greift aber im \textbf{Druckpunkt $D$} an, der immer \emph{unterhalb} von $S$ liegt ($z_\alpha$ = Koordinate entlang der Fläche, $\alpha$ = Neigung gegen die Senkrechte):
+\begin{formel}
+\[
+F = p_S\,A = \rho g\cos\alpha\,|z_{\alpha S}|\,A = \rho g\,|z_S|\,A
+\qquad
+z_{\alpha F} = z_{\alpha S} + \frac{I_{\alpha S y}}{z_{\alpha S}\,A}
+\]
+\[
+I_{\text{Rechteck}} = \frac{b\,h^3}{12}, \qquad I_{\text{Kreis}} = \frac{\pi d^4}{64}
+\]
+\end{formel}
+
+\subsubsection{Auftrieb (Archimedes)}
+
+Auftrieb = Gewichtskraft des verdrängten Fluids. An der Trennfläche Flüssigkeit/Gas zählen beide Anteile:
+\[
+F_A = g\int_{V_{Fl}}\rho_{Fl}\,\dd V_{Fl} + g\int_{V_G}\rho_G\,\dd V_G
+\qquad\text{ganz eingetaucht: } F_A = \rho_{Fl}\,g\,V_{Fl}
+\]
+Schwimmen im Gleichgewicht: $G = F_A$.
+
+%=====================================================================
+\section{Stromfadentheorie: Bernoulli}
+
+\textbf{Kernaussage:} Für inkompressible ($\rho = \text{const}$), reibungsfreie ($\eta = 0$) Strömung lässt sich die Euler-Gleichung entlang einer Stromlinie integrieren. Die Summe aus Druck-, Bewegungs- und Lageenergie bleibt konstant.
+
+\begin{formel}[title={Bernoulli-Gleichung}]
+\[
+\text{instationär:}\quad \frac{p_1}{\rho} + \frac{v_1^2}{2} + g z_1 = \frac{p_2}{\rho} + \frac{v_2^2}{2} + g z_2 + \int_1^2\frac{\partial v}{\partial t}\,\dd s
+\]
+\[
+\text{stationär:}\quad \frac{p}{\rho} + \frac{v^2}{2} + g z = \text{const}
+\qquad\text{dazu}\quad v_1(t)\,A_1 = v_2(t)\,A_2 = \dot V(t)
+\]
+\end{formel}
+
+\subsection{Ausfluss aus einem Behälter -- Torricelli}
+
+\begin{minipage}{0.52\linewidth}
+Punkt 1 an der Oberfläche ($p = p_0$, $v \approx 0$, $z = h$), Punkt 2 im Austritt ($p = p_0$, $z = 0$):
+\begin{formel}
+\[
+v = \sqrt{2\,g\,h}
+\]
+\end{formel}
+Die Austrittsgeschwindigkeit ist dieselbe wie beim freien Fall aus der Höhe $h$.
+\end{minipage}\hfill
+\begin{minipage}{0.45\linewidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\fill[wasser] (0,0) rectangle (4,3);
+\draw[wand] (0,3.6)--(0,0)--(4,0)--(4,0.2);
+\draw[wand] (4,0.5)--(4,3.6);
+\draw[wand] (4,0.2)--(4.4,0.2); \draw[wand] (4,0.5)--(4.4,0.5);
+\fill[wasser] (4,0.2) rectangle (4.4,0.5);
+\draw[acc,thick] (0,3)--(4,3);
+\draw[line width=4pt,wasser!70!acc] (4.4,0.35) .. controls (5.3,0.35) and (5.8,-0.3) .. (6.1,-1.3);
+\draw[thin,dashed,->] (1.8,3) .. controls (1.8,1.2) and (2.8,0.35) .. (4.35,0.35);
+\fill (1.8,3) circle (1.8pt) node[above]{1};
+\fill (4.4,0.35) circle (1.8pt) node[above right]{2};
+\node[above] at (3.1,3) {$p_0$};
+\draw[mass] (-0.4,3)--(-0.4,0.35) node[midway,left]{$h$};
+\draw[thin,dashed] (-0.5,0.35)--(0,0.35);
+\end{tikzpicture}
+\abb{Ausfluss aus einem offenen Behälter.}
+\end{minipage}
+
+\subsection{Energie- und Drucklinie}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.9]
+\draw[thick,gray] (-0.3,0)--(9,0) node[right,black,lbl]{$z = 0$};
+\fill[wasser] (0,3.4)--(3.3,2.87)--(3.8,2.6)--(8,1.91)--(8,1.49)--(3.8,2.18)--(3.3,2.07)--(0,2.6)--cycle;
+\draw[wand] (0,3.4)--(3.3,2.87)--(3.8,2.6)--(8,1.91);
+\draw[wand] (0,2.6)--(3.3,2.07)--(3.8,2.18)--(8,1.49);
+\draw[thin,dash dot] (0,3.0)--(3.3,2.47)--(3.8,2.39)--(8,1.7);
+\node[lbl] at (0.9,3.6) {1};
+\node[lbl] at (7.6,2.2) {2};
+\draw[very thick,acc] (0,6.2)--(8.6,6.2) node[pos=0,above right,black,lbl]{Energielinie (reibungsfrei)};
+\draw[very thick,acc2,dashed] (0,5.6)--(3.3,5.6)--(3.8,4.4)--(8.6,4.4);
+\node[lbl,above right] at (0,5.6) {Drucklinie};
+\draw[mass] (6.9,6.2)--(6.9,4.4) node[midway,right]{$\dfrac{v^2}{2}$};
+\draw[mass] (6.9,4.4)--(6.9,1.82) node[midway,right]{$\dfrac{p}{\rho}$};
+\draw[mass] (6.9,1.82)--(6.9,0) node[midway,right]{$g\,z$};
+\end{tikzpicture}
+\abb{Energie- und Drucklinie (Maßstab: Energie pro Masse). Wo das Rohr enger wird, steigt $v$ und die Drucklinie fällt.}
+\end{bild}
+
+Die \textbf{Energielinie} liegt reibungsfrei waagerecht. Die \textbf{Drucklinie} liegt um $v^2/2$ darunter und gibt den örtlichen Druck im Rohr an. Liegt sie unter der Rohrachse, herrscht Unterdruck.
+
+\subsection{Druckmessung}
+
+Senkrecht zur Wand ändert sich der Druck in der Grenzschicht nicht, deshalb misst eine Wandbohrung den \textbf{statischen Druck} $p$.
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.85]
+\fill[wasser] (-0.5,-1.1) rectangle (11.5,0);
+\draw[wand] (-0.5,0)--(0.9,0); \draw[wand] (1.1,0)--(4.4,0); \draw[wand] (4.6,0)--(8.4,0); \draw[wand] (8.6,0)--(11.5,0);
+\draw[pf] (-0.3,-0.6)--(0.6,-0.6) node[pos=0,above right,lbl]{$p$};
+% Standrohr
+\fill[wasser] (0.9,0) rectangle (1.1,2.5);
+\draw[thick] (0.9,0)--(0.9,3.2); \draw[thick] (1.1,0)--(1.1,3.2);
+\draw[mass] (0.45,0)--(0.45,2.5) node[midway,left]{$h$};
+\node[above] at (1,3.2) {$p_0$};
+\node[lbl,align=center] at (1,-1.6) {Standrohr};
+% U-Rohr
+\draw[wasser,line width=5.5pt] (4.5,0)--(4.5,3.0) arc[start angle=180,end angle=0,radius=0.4]--(5.3,1.3);
+\draw[thick] (4.4,0)--(4.4,3.0) arc[start angle=180,end angle=0,radius=0.5]--(5.4,1.0) arc[start angle=180,end angle=360,radius=0.4]--(6.2,3.2);
+\draw[thick] (4.6,0)--(4.6,3.0) arc[start angle=180,end angle=0,radius=0.3]--(5.2,1.0) arc[start angle=180,end angle=360,radius=0.6]--(6.4,3.2);
+\fill[acc2!60] (5.2,1.0) arc[start angle=180,end angle=360,radius=0.6]--(6.4,1.7)--(6.2,1.7)--(6.2,1.0) arc[start angle=360,end angle=180,radius=0.4]--(5.4,1.3)--(5.2,1.3)--cycle;
+\draw[thin,dashed] (5.4,1.3)--(6.7,1.3); \draw[thin,dashed] (6.4,1.7)--(6.7,1.7);
+\draw[mass] (6.7,1.3)--(6.7,1.7) node[midway,right]{$\Delta h$};
+\draw[mass] (3.95,0)--(3.95,1.7) node[midway,left]{$h$};
+\draw[thin,dashed] (3.95,1.7)--(4.4,1.7);
+\node[lbl] at (6.6,2.4) {$\rho_{Sp}$};
+\node[above] at (6.3,3.2) {$p_0$};
+\node[lbl] at (5.3,-1.6) {U-Rohr};
+% Manometer
+\fill[wasser] (8.4,0) rectangle (8.6,2.0);
+\draw[thick] (8.4,0)--(8.4,2.0); \draw[thick] (8.6,0)--(8.6,2.0);
+\draw[thick,fill=white] (8.5,2.45) circle (0.45);
+\draw[->,thick] (8.5,2.45)--(8.75,2.75);
+\node[right] at (8.95,2.45) {$p_M$};
+\draw[mass] (9.4,0)--(9.4,2.0) node[midway,right]{$h$};
+\node[lbl] at (8.5,-1.6) {Manometer};
+\end{tikzpicture}
+\abb{Wanddruckmessung (statischer Druck).}
+\end{bild}
+
+\[
+\begin{aligned}
+&\text{Standrohr:} && p - p_0 = \rho g h\\
+&\text{U-Rohr:} && p - p_0 = \rho g h + (\rho_{Sp} - \rho)\,g\,\Delta h\\
+&\text{Manometer:} && p - p_0 = p_M + \rho g h
+\end{aligned}
+\]
+
+\textbf{Pitotrohr} (Öffnung gegen die Strömung, dort wird das Fluid auf $v = 0$ abgebremst) misst den \textbf{Gesamtdruck} = statischer Druck + Staudruck. Das \textbf{Prandtl-Staurohr} vergleicht Gesamtdruck und statischen Druck in einem U-Rohr und misst so direkt den Staudruck.
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.85]
+% Pitot im offenen Gerinne
+\fill[wasser] (0,-1.6) rectangle (5,0);
+\draw[acc,thick] (0,0)--(5,0); \node[above] at (0.5,0) {$p_0$};
+\draw[wand] (0,-1.6)--(5,-1.6);
+\draw[pf] (0.2,-0.9)--(1.1,-0.9) node[pos=0,above right,lbl]{$p_1, v_1$};
+\fill[wasser] (3.0,-0.8) rectangle (3.2,1.2);
+\fill[wasser] (2.2,-1.0) rectangle (3.2,-0.8);
+\draw[thick] (3.0,1.9)--(3.0,-0.8)--(2.2,-0.8);
+\draw[thick] (3.2,1.9)--(3.2,-1.0)--(2.2,-1.0);
+\fill (2.2,-0.9) circle (1.5pt) node[below left,lbl]{2};
+\draw[thin,dashed] (2.2,-0.9)--(3.9,-0.9);
+\draw[thin,dashed] (3.2,1.2)--(3.9,1.2);
+\draw[mass] (3.8,-0.9)--(3.8,1.2) node[midway,right]{$h$};
+\node[lbl] at (2.5,-2.1) {Pitotrohr: Gesamtdruck};
+% Prandtl
+\begin{scope}[xshift=6.6cm]
+\fill[wasser] (0,-1.6) rectangle (5.4,0);
+\draw[wand] (0,0)--(1.55,0); \draw[wand] (1.75,0)--(3.95,0); \draw[wand] (4.15,0)--(5.4,0);
+\draw[wand] (0,-1.6)--(5.4,-1.6);
+\draw[pf] (0.15,-0.8)--(1.0,-0.8) node[pos=0,above right,lbl]{$v, p, \rho$};
+\fill[white] (1.25,-0.95) rectangle (4.3,-0.65);
+\draw[thick] (1.25,-0.65)--(4.3,-0.65)--(4.3,-0.95)--(1.25,-0.95);
+\fill[acc2] (1.25,-0.8) circle (1.5pt);
+\fill (1.65,-0.65) circle (1.5pt);
+\draw[thick] (1.65,-0.65)--(1.65,1.9) -- (2.25,1.9)--(2.25,1.6);
+\draw[thick] (4.05,-0.65)--(4.05,1.9)--(3.25,1.9)--(3.25,1.6);
+\draw[thick] (2.25,1.6)--(2.25,0.9) arc[start angle=180,end angle=360,radius=0.5]--(3.25,1.6);
+\fill[acc2!60] (2.18,1.25)--(2.18,0.9) arc[start angle=180,end angle=360,radius=0.57]--(3.32,0.95)--(3.18,0.95)--(3.18,0.9) arc[start angle=360,end angle=180,radius=0.43]--(2.32,1.25)--cycle;
+\draw[thin,dashed] (1.9,1.25)--(3.6,1.25); \draw[thin,dashed] (3.3,0.95)--(3.6,0.95);
+\draw[mass] (3.55,0.95)--(3.55,1.25);
+\node[right,lbl] at (3.6,1.1) {$\Delta h$};
+\node[lbl] at (2.75,0.2) {$\rho_{Sp}$};
+\node[lbl] at (2.7,-2.1) {Prandtl-Staurohr: Staudruck};
+\end{scope}
+\end{tikzpicture}
+\abb{Messungen im Strömungsinneren. Am Prandtl-Rohr: vordere Öffnung = Gesamtdruck, seitliche Bohrung = statischer Druck. Der statische Schenkel steht höher.}
+\end{bild}
+
+\begin{formel}
+\[
+p_{ges} = p_1 + \rho\,\frac{v_1^2}{2} = p_0 + \rho g h
+\qquad
+\rho\,\frac{v^2}{2} = (\rho_{Sp} - \rho)\,g\,\Delta h
+\;\Rightarrow\;
+v = \sqrt{\frac{2\,(\rho_{Sp} - \rho)\,g\,\Delta h}{\rho}}
+\]
+\end{formel}
+
+\subsection{Instationäre Strömung}
+
+Voraussetzung: Verluste vernachlässigbar, kurze Leitungen oder langsame Vorgänge (sonst Druckwellen, $\rho$ nicht mehr konstant).
+
+\textbf{Schwingung im U-Rohr} (Querschnitte $A_1$, $A_2$; Schenkel 2 unter $\beta$ geneigt). Bernoulli instationär für beide Säulen ergibt:
+\[
+\ddot x_1\left(l_1 + \frac{A_1}{A_2}\,l_2\right) + x_1\,g\left(1 + \frac{A_1}{A_2}\sin\beta\right) = 0
+\qquad\Rightarrow\qquad
+\omega = \sqrt{\frac{g\left(1 + \frac{A_1}{A_2}\sin\beta\right)}{l_1 + \frac{A_1}{A_2}\,l_2}}
+\]
+Gleichschenklig ($A_1 = A_2$, $\beta = 90^\circ$, $l$ = Gesamtlänge der Säule): \fbox{$\omega = \sqrt{2g/l}$}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.8]
+\fill[wasser] (0.1,0) rectangle (0.7,2.6);
+\fill[wasser] (2.3,0) rectangle (2.9,1.4);
+\fill[wasser] (0.1,0) arc[start angle=180,end angle=360,radius=1.4]--(2.3,0) arc[start angle=360,end angle=180,radius=0.8]--cycle;
+\draw[thick] (0.1,3.2)--(0.1,0) arc[start angle=180,end angle=360,radius=1.4]--(2.9,3.2);
+\draw[thick] (0.7,3.2)--(0.7,0) arc[start angle=180,end angle=360,radius=0.8]--(2.3,3.2);
+\draw[thin,dashed] (-0.4,2.0)--(3.4,2.0) node[right,lbl]{Ruhelage};
+\draw[mass] (-0.2,2.0)--(-0.2,2.6) node[midway,left]{$x$};
+\draw[mass] (3.2,2.0)--(3.2,1.4) node[midway,right]{$x$};
+\end{tikzpicture}
+\abb{Flüssigkeitssäule im U-Rohr, um $x$ ausgelenkt.}
+\end{bild}
+
+\textbf{Verzögerung einer Rohrleitungsströmung:} Ein Schieber bremst $v_0$ in der Schließzeit $T_S$ linear auf null. $\rho = \text{const}$ ist zulässig, solange $L/a \ll T_S$. Druck am Schieber:
+\[
+\frac{p_2}{\rho} = \underbrace{\frac{p_0}{\rho} + g h_0}_{\text{Druck bei } v = 0} - \underbrace{\frac{v_0^2}{2}\left(1 - \frac{t}{T_S}\right)^2}_{\text{kinetische Energie}} + \frac{v_0}{T_S}\,L
+\]
+Der letzte Term ist der Druckanstieg durch das Abbremsen der Wassersäule -- je schneller geschlossen wird, desto größer.
+
+\subsection{Rotierende Kanäle}
+
+Im mitrotierenden System kommt die Fliehkraft als Term $-\omega^2 r^2/2$ hinzu ($w$ = Relativgeschwindigkeit):
+\[
+\frac{p_1}{\rho} + \frac{w_1^2}{2} + g z_1 - \frac{\omega^2 r_1^2}{2} = \frac{p_2}{\rho} + \frac{w_2^2}{2} + g z_2 - \frac{\omega^2 r_2^2}{2} + \int_1^2\frac{\partial w}{\partial t}\,\dd s
+\]
+Ausfluss aus einem rotierenden Rohr (Radius $R$, Wasserhöhe $h$): \ $w = \sqrt{2 g h + \omega^2 R^2}$
+
+\textbf{Krümmungsdruckformel} (nicht rotierend): Bei gekrümmten Stromlinien steigt der Druck nach außen. Bei geraden Stromlinien ($R_K = \infty$) ist der Druck quer zur Strömung konstant -- in einer Parallelströmung herrscht überall derselbe Druck.
+\[
+\frac{1}{\rho}\frac{\partial p}{\partial n} = \frac{w^2}{R_K}
+\]
+Im rotierenden Kanal (Laufrad):
+\[
+\frac{1}{\rho}\frac{\partial p}{\partial n} = \frac{w^2}{R_K} + \omega^2 r\cos\beta - 2\omega w,
+\qquad
+\frac{\partial w}{\partial n} = -\frac{w}{R_K} + 2\omega
+\]
+
+%=====================================================================
+\section{Impulssatz und Impulsmomentensatz}
+
+\textbf{Kernaussage:} Der Impulssatz verknüpft äußere Kräfte mit den Impulsströmen durch eine \textbf{Kontrollfläche}. Was innen passiert (Reibung, Wirbel), muss man nicht kennen -- nur die Größen auf der Fläche. Darum ist er das Werkzeug für \textbf{Kräfte} und \textbf{Mischungsverluste}.
+
+\begin{formel}[title={Impulssatz (stationär)}]
+\[
+\sum\vec F - \int_A \rho\,\vec v\,(\vec v\cdot\dd\vec A) = 0
+\qquad\Longrightarrow\qquad
+\vec F_p + \vec F_V + \vec F_S - \int_A \rho\,\vec v\,(\vec v\cdot\dd\vec A) = 0
+\]
+\end{formel}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Kraft & Herkunft & Formel \\ \midrule
+Druckkraft $\vec F_p$ & freie Teile der Kontrollfläche & $-\int p\,\dd\vec A$ \ ($\dd\vec A$ zeigt nach außen) \\
+Volumenkraft $\vec F_V$ & Fluid im Inneren & Schwere: $\int \rho\vec g\,\dd V$ \\
+Stützkraft $\vec F_S$ & Wand wirkt auf das Fluid & meist gesucht \\
+Reaktionskraft $\vec F_R$ & Fluid wirkt auf die Wand & $\vec F_R = -\vec F_S$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richtungsregel:} Am Eintritt zeigen Druckkraft und Impulsfluss in Strömungsrichtung, am Austritt gegen die Strömungsrichtung -- beide also immer \emph{ins Innere} der Kontrollfläche. Alle Vektoren bilden ein geschlossenes \textbf{Krafteck}.
+
+Sind $\rho$, $v$, $p$ über den Querschnitt konstant und $v \perp A$, fasst man Druck und Impulsfluss zusammen:
+\begin{formel}
+\[
+\vec I_1 = -(p_1 + \rho v_1^2)\,\vec A_1, \qquad \vec I_2 = -(p_2 + \rho v_2^2)\,\vec A_2, \qquad
+\vec I_1 + \vec I_2 + \vec F_V + \vec F_S = 0
+\]
+\end{formel}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.88]
+\fill[wasser] (0,-0.4)--(2.6,-0.4) arc[start angle=-90,end angle=0,radius=2.0]--(4.6,3.2)--(3.8,3.2)--(3.8,1.6) arc[start angle=0,end angle=-90,radius=1.2]--(0,0.4)--cycle;
+\draw[wand] (0,-0.4)--(2.6,-0.4) arc[start angle=-90,end angle=0,radius=2.0]--(4.6,3.2);
+\draw[wand] (0,0.4)--(2.6,0.4) arc[start angle=-90,end angle=0,radius=1.2]--(3.8,3.2);
+\draw[thick,dashed,acc] (0,-0.6)--(0,0.6);
+\draw[thick,dashed,acc] (3.6,3.2)--(4.8,3.2);
+\node[lbl,acc,anchor=north west] at (-0.1,-0.7) {Kontrollfläche};
+\draw[pf,acc2] (-1.3,0)--(-0.05,0) node[pos=0.35,above,black]{$\vec I_1$};
+\draw[pf,acc2] (4.2,4.5)--(4.2,3.25) node[pos=0.35,right,black]{$\vec I_2$};
+\draw[pf,acc3] (3.6,0.75)--(3.6,0.05) node[pos=0,above left,black]{$\vec F_V$};
+\draw[pf,acc] (5.7,-1.0)--(4.12,0.12) node[pos=0,right,black]{$\vec F_S$};
+\node[lbl] at (1.3,0) {$v_1, p_1$};
+\node[lbl,anchor=west] at (4.75,2.6) {$v_2, p_2$};
+\begin{scope}[xshift=7.6cm,yshift=0.2cm]
+\node[lbl,gray] at (1.2,4.05) {Krafteck};
+\draw[pf,acc2] (0,3)--(2.4,3) node[midway,above,black]{$\vec I_1$};
+\draw[pf,acc2] (2.4,3)--(2.4,1.4) node[midway,right,black]{$\vec I_2$};
+\draw[pf,acc3] (2.4,1.4)--(2.4,0.6) node[midway,right,black]{$\vec F_V$};
+\draw[pf,acc] (2.4,0.6)--(0,3) node[midway,below left,black]{$\vec F_S$};
+\end{scope}
+\end{tikzpicture}
+\abb{90°-Rohrkrümmer: $\vec I_1$ und $\vec I_2$ zeigen ins Innere der Kontrollfläche; die Stützkraft $\vec F_S$ schließt das Krafteck. Kraft auf den Krümmer: $\vec F_R = -\vec F_S$.}
+\end{bild}
+
+\textbf{Lage der Kontrollfläche:}
+\begin{itemize}
+\item \emph{Direkt um das Fluid} $\Rightarrow$ Kraft zwischen Wand und Fluid oder Mischungsverluste.
+\item \emph{Außen um das ganze System} $\Rightarrow$ Einspann- und Auflagerkräfte. Umgebungsdruck fällt heraus (mit $p - p_0$ rechnen), Eigengewicht $G$ kommt dazu.
+\end{itemize}
+
+\textbf{Beispiel Behälter mit Bodenausfluss} ($A_1 \gg A_2$, $h = \text{const}$, $v_2^2 = 2gh$):
+\[
+F_F = \rho g h\,(A_1 - 2A_2) + G
+\]
+Der Strahl entlastet das Fundament um $2\rho g h A_2$ -- doppelt so viel wie das \glqq fehlende\grqq{} Bodenstück, weil der Impulsstrom dazukommt.
+
+\subsection{Plötzliche Erweiterung -- Carnot'scher Stoßverlust}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.88]
+\fill[wasser] (0,0.8)--(3,0.8)--(3,1.8)--(9,1.8)--(9,-1.8)--(3,-1.8)--(3,-0.8)--(0,-0.8)--cycle;
+\draw[wand] (0,0.8)--(3,0.8)--(3,1.8)--(9,1.8);
+\draw[wand] (0,-0.8)--(3,-0.8)--(3,-1.8)--(9,-1.8);
+\draw[acc,thick] (3,0.8) .. controls (4.6,0.8) and (5.6,1.7) .. (7,1.8);
+\draw[acc,thick] (3,-0.8) .. controls (4.6,-0.8) and (5.6,-1.7) .. (7,-1.8);
+\draw[thin] (3.75,1.3) ellipse (0.55 and 0.32); \draw[->,thin] (3.6,1.62)--(3.95,1.62);
+\draw[thin] (3.75,-1.3) ellipse (0.55 and 0.32); \draw[->,thin] (3.95,-1.62)--(3.6,-1.62);
+\draw[thin,dashed] (3,-2.1)--(3,2.1) node[above]{1};
+\draw[thin,dashed] (8,-2.1)--(8,2.1) node[above]{2};
+\foreach \y in {-0.45,0,0.45} \draw[->,thick,acc2] (1.9,\y)--(2.9,\y);
+\node at (1.5,0) {$v_1$};
+\foreach \y in {-1.5,-0.9,-0.3,0.3,0.9,1.5} \draw[->,thick,acc2] (8.05,\y)--(8.6,\y);
+\node[right] at (8.9,0) {$v_2$};
+\node[lbl] at (0.5,0.5) {$A_1$}; \node[lbl] at (6.4,-1.3) {$A_2$};
+\node[lbl] at (3.35,0.35) {$p_1$}; \node[lbl] at (7.65,0.35) {$p_2$};
+\end{tikzpicture}
+\abb{Der Strahl löst an der Kante ab; in den Ecken drehen Wirbel, bis er sich in Querschnitt 2 wieder anlegt. Diese Vermischung kostet Druck.}
+\end{bild}
+
+Annahmen: $p_1$ wirkt im Querschnitt 1 auch auf den Ringspalt $A_2 - A_1$; keine Wandreibung; $\rho = \text{const}$.
+\[
+(p_1 + \rho v_1^2)\,A_1 + p_1\,(A_2 - A_1) - (p_2 + \rho v_2^2)\,A_2 = 0, \qquad v_1 A_1 = v_2 A_2
+\]
+\begin{formel}[title={Carnot'scher Stoßverlust}]
+\[
+p_2 = p_1 + \rho\,v_2\,(v_1 - v_2) \qquad\Longrightarrow\qquad \Delta p_l = \frac{\rho}{2}\,(v_1 - v_2)^2
+\]
+\end{formel}
+Der Verlust ist die Differenz zum verlustfreien Druckanstieg nach Bernoulli. Typisches Prüfungsthema!
+
+\subsection{Impulsmomentensatz}
+
+\[
+\sum\vec M + \rho_1\,(\vec r_1\times\vec v_1)\,Q_1 - \rho_2\,(\vec r_2\times\vec v_2)\,Q_2 = 0
+\]
+\begin{formel}[title={Euler'sche Turbinengleichung (radiales Laufrad, $u = \omega r$)}]
+\[
+M_R = \rho\,Q\,(r_1 v_1\cos\alpha_1 - r_2 v_2\cos\alpha_2), \qquad
+P = M_R\,\omega = \rho\,Q\,(u_1 v_1\cos\alpha_1 - u_2 v_2\cos\alpha_2)
+\]
+\end{formel}
+$\alpha$ ist der Winkel zwischen $\vec v$ und der Umfangsrichtung; nur die Umfangskomponente $v\cos\alpha$ erzeugt Drehmoment.
+
+\subsection{Zirkulation und Tragflügel}
+
+\[
+\Gamma = \oint \vec v\cdot\dd\vec s, \qquad \text{Gitter: } \Gamma = t\,(v_{1y} - v_{2y})
+\]
+\begin{formel}[title={Auftrieb (Kutta-Joukowski) und Beiwerte}]
+\[
+F_A = \rho\,v_\infty\,\Gamma\,b = c_A\,\frac{\rho}{2}\,v_\infty^2\,b\,l
+\qquad
+F_W = c_W\,\frac{\rho}{2}\,v_\infty^2\,b\,l
+\qquad
+\tan\varepsilon = \frac{c_W}{c_A} = \frac{F_W}{F_A}
+\]
+\end{formel}
+$F_A$ steht senkrecht auf der Anströmung $v_\infty$. Oben drängen sich die Stromlinien zusammen ($v$ größer, $p$ kleiner), unten weiten sie sich: $v/v_\infty = \Delta n_\infty/\Delta n$.
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.9]
+\draw[pf] (-1.6,0)--(-0.3,0) node[pos=0,above right]{$v_\infty$};
+\fill[acc!15] (0,0) .. controls (0.6,0.55) and (2.5,0.45) .. (4.2,-0.65) .. controls (2.6,-0.1) and (0.8,-0.25) .. (0,0) -- cycle;
+\draw[thick] (0,0) .. controls (0.6,0.55) and (2.5,0.45) .. (4.2,-0.65) .. controls (2.6,-0.1) and (0.8,-0.25) .. (0,0) -- cycle;
+\draw[thin,dashed] (0,0)--(4.8,0);
+\draw[thin,dashed] (0,0)--(4.6,-0.71);
+\draw[thin] (4.3,0) arc[start angle=0,end angle=-8.8,radius=4.3];
+\node[lbl] at (4.75,-0.35) {$\alpha$};
+\coordinate (O) at (1.6,0.1);
+\draw[pf,acc] (O)--++(0,2.6) node[pos=0.6,left,black]{$F_A$};
+\draw[pf,acc2] ($(O)+(0,2.6)$)--++(0.75,0) node[pos=1,right,black]{$F_W$};
+\draw[pf,thin] (O)--++(0.75,2.6) node[pos=0.55,right,black]{$F_R$};
+\draw[thin] ($(O)+(0,1.3)$) arc[start angle=90,end angle=73.9,radius=1.3];
+\node[lbl] at ($(O)+(0.2,1.5)$) {$\varepsilon$};
+\begin{scope}[xshift=7.6cm,yshift=-0.9cm]
+\draw[->] (0,0)--(3.6,0) node[below left]{$c_W$};
+\draw[->] (0,-0.4)--(0,4.2) node[left]{$c_A$};
+\draw[very thick,acc,domain=-0.9:3.4,samples=50,smooth] plot ({1.5*(0.4+0.35*((\x/1.5+0.)-0.8)^2)},{\x});
+\draw[thin] (0,0)--(1.4,3.74);
+\fill (0.75,2.0) circle (1.7pt) node[right,lbl]{$\alpha_{opt}$};
+\draw[thin] (0,1.0) arc[start angle=90,end angle=69.5,radius=1.0];
+\node[lbl] at (0.22,1.25) {$\varepsilon_{opt}$};
+\node[lbl] at (2.35,3.1) {$\alpha > 0$};
+\node[lbl] at (1.55,-0.55) {$\alpha < 0$};
+\end{scope}
+\end{tikzpicture}
+\abb{Links: Kräfte am Flügel, Gleitwinkel $\varepsilon$ zwischen Auftrieb und Resultierender. Rechts: Polare $c_A(c_W)$; die Tangente vom Ursprung trifft den besten Anstellwinkel $\alpha_{opt}$ mit dem kleinsten Gleitwinkel.}
+\end{bild}
+
+\begin{itemize}
+\item \textbf{d'Alembert'sches Paradoxon:} Im reibungsfreien Fluid wirkt außer $F_A$ keine Kraft, also kein Widerstand.
+\item \textbf{Anfahrwirbel:} Beim Anfahren löst an der Hinterkante ein Wirbel ab und schwimmt weg; die Zirkulation um den Flügel entsteht gegensinnig (Thomson'scher Satz).
+\item \textbf{Randwirbel:} Am endlichen Flügel strömt Luft um die Flügelenden. Die ständige Neubildung der Randwirbel kostet Energie: \textbf{induzierter Widerstand} $F_{Wi}$, auch im idealen Fluid. Gesamtwiderstand $F_W = F_{Wi} + F_{W\nu}$ (Reibung).
+\end{itemize}
+
+%=====================================================================
+\section{Rohrhydraulik}
+
+\textbf{Kernaussage:} Jedes Bauteil kostet Druck. Den Verlust beschreibt ein Verlustbeiwert $\zeta$ mal Staudruck; für gerade Rohre ist $\zeta = \lambda L/D$, und $\lambda$ liest man aus dem Moody-Diagramm ab.
+
+\begin{formel}[title={Verlustansatz}]
+\[
+\Delta e_l = \frac{\Delta p_l}{\rho} = \zeta\,\frac{\bar v^2}{2}, \qquad
+\Delta p_l = \zeta\,\rho\,\frac{\bar v^2}{2}, \qquad
+\Delta h_l = \frac{\Delta p_l}{\rho g} = \zeta\,\frac{\bar v^2}{2g}
+\]
+\end{formel}
+Gerechnet wird mit der mittleren Geschwindigkeit $\bar v = Q/A$. Bei wechselndem Querschnitt immer angeben, auf welches $A$ sich $\zeta$ bezieht!
+
+\subsection{Gerade Rohrleitungen}
+
+\begin{formel}
+\[
+\zeta = \lambda\,\frac{L}{D}, \qquad \frac{\Delta p_l}{\rho} = \lambda\,\frac{L}{D}\,\frac{\bar v^2}{2}, \qquad Re = \frac{\bar v\,D}{\nu}
+\]
+\end{formel}
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+$Re \le 2300$ & immer laminar \\
+$2300 < Re < 50\,000$ & laminar (labil) oder turbulent \\
+$Re > 50\,000$ & immer turbulent \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.85]
+\foreach \xs/\name in {0/Laminar, 7.6/Turbulent} {
+  \begin{scope}[xshift=\xs cm]
+  \fill[wasser] (0,0) rectangle (6.4,3);
+  \draw[wand] (0,0)--(6.4,0); \draw[wand] (0,3)--(6.4,3);
+  \draw[thin] (0.4,0)--(0.4,3);
+  \node[above] at (3.2,3.05) {\sffamily\bfseries \name};
+  \end{scope}}
+\foreach \r in {-1.25,-0.75,-0.25,0.25,0.75,1.25} \draw[->,thick] (0.4,1.5+\r)--({0.4+4.6*(1-(\r/1.5)^2)},1.5+\r);
+\draw[->,thick] (0.4,1.5)--(5.0,1.5);
+\draw[very thick,acc,domain=-1.5:1.5,samples=40] plot ({0.4+4.6*(1-(\x/1.5)^2)},{1.5+\x});
+\begin{scope}[xshift=7.6cm]
+\foreach \r in {-1.25,-0.75,-0.25,0.25,0.75,1.25} \draw[->,thick] (0.4,1.5+\r)--({0.4+3.6*(1-abs(\r)/1.5)^(1/7)},1.5+\r);
+\draw[->,thick] (0.4,1.5)--(4.0,1.5);
+\draw[very thick,acc2,domain=-1.5:1.5,samples=80] plot ({0.4+3.6*(1-abs(\x)/1.5)^(1/7)},{1.5+\x});
+\end{scope}
+\end{tikzpicture}
+\abb{Geschwindigkeitsprofile: laminar parabolisch ($v_{max} = 2\bar v$), turbulent völliger und an der Wand steiler (Potenzgesetz mit $n \approx 1/7$).}
+\end{bild}
+
+\textbf{Laminar (Hagen-Poiseuille):} parabolisches Profil, $\Delta p_l \sim \bar v$.
+\begin{formel}
+\[
+v(r) = \frac{\dd p_l}{\dd s}\,\frac{1}{4\eta}\,(R^2 - r^2), \qquad
+Q = \frac{\dd p_l}{\dd s}\,\frac{\pi}{8\eta}\,R^4, \qquad
+\frac{\Delta p_l}{\rho} = \frac{32\,\nu\,L\,\bar v}{D^2} \;\Rightarrow\; \lambda = \frac{64}{Re}
+\]
+\end{formel}
+
+\textbf{Turbulent:} $\lambda = \lambda(Re, k/D)$. Liegt die Rauheit $k$ innerhalb der zähen (laminaren) Unterschicht, ist das Rohr \textbf{hydraulisch glatt}. Colebrook-White gilt für den gesamten turbulenten Bereich (implizit: iterieren oder im Moody-Diagramm ablesen):
+\begin{formel}
+\[
+\frac{1}{\sqrt{\lambda}} = -2\,\lg\!\left(\frac{2{,}51}{Re\,\sqrt{\lambda}} + 0{,}27\,\frac{k}{D}\right)
+\]
+\end{formel}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.9]
+\draw[->] (0,0)--(9.4,0) node[below left]{$\lg Re$};
+\draw[->] (0,0)--(0,5.3) node[left]{$\lg\lambda$};
+\draw[thin,dashed] (2.1,0)--(2.1,5.0);
+\node[below,lbl] at (2.1,0) {$Re \approx 2300$};
+\draw[very thick] (0.3,5.0)--(2.3,2.38); \draw[thick,dashed] (2.3,2.38)--(2.9,1.6);
+\node[lbl,align=left,anchor=east] at (1.5,2.3) {laminar\\$\lambda = 64/Re$};
+\draw[very thick,acc] (2.0,3.05)--(9.0,1.0);
+\node[lbl,acc,anchor=north west,rotate=-16] at (4.6,2.2) {hydraulisch glatt};
+\draw[thick,acc2] (2.3,2.97) .. controls (3.1,3.6) and (4.2,3.95) .. (9.0,3.95) node[right,black,lbl]{$k/D$ groß};
+\draw[thick,acc2] (3.2,2.7) .. controls (4.1,3.05) and (5.2,3.1) .. (9.0,3.1);
+\draw[thick,acc2] (4.6,2.29) .. controls (5.6,2.45) and (6.6,2.35) .. (9.0,2.3) node[right,black,lbl]{$k/D$ klein};
+\node[lbl,acc2,anchor=south] at (6.2,4.0) {hydraulisch rau: $\Delta p_l \sim v^2$};
+\end{tikzpicture}
+\abb{Moody-Diagramm (schematisch). Je rauer das Rohr, desto früher wird die Kurve waagerecht; dann hängt $\lambda$ nur noch von $k/D$ ab. Das maßstäbliche Diagramm steht im Anhang des Originalskripts.}
+\end{bild}
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Bereich & Druckverlust \\ \midrule
+laminar & $\Delta p_l \sim \bar v$ \\
+hydraulisch glatt, turbulent & $\Delta p_l \sim \bar v^{1{,}75}$ \\
+hydraulisch rau, turbulent & $\Delta p_l \sim \bar v^{2}$ \\
+\bottomrule
+\end{tabular}
+\qquad
+\begin{tabular}{@{}ll@{}}
+\toprule
+Werkstoff & Rauheit $k$ \\ \midrule
+Glas, Kupfer, Kunststoff & ca.\ 0{,}001--\SI{0.005}{mm} \\
+Stahl & ca.\ 0{,}02--\SI{1}{mm} \\
+Beton & ca.\ 0{,}1--\SI{5}{mm} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Gas in langer Leitung} (isotherm, $\alpha$ und $\dd(v^2/2)$ vernachlässigt):
+\[
+p_1^2 - p_2^2 = \lambda\,\frac{L}{D}\,\frac{\bar v_1^2}{2}\cdot 2\,p_1\,\rho_1
+\]
+
+\textbf{Turbulentes Profil (Potenzgesetz, Nikuradse)} mit $n = \frac16$ ($Re = 4\cdot10^3$), $\frac17$ ($10^5$), $\frac19$ ($10^6$), $\frac1{10}$ ($3\cdot10^6$):
+\[
+\bar v_t = \bar v_{t,max}\left(1 - \frac{r}{R}\right)^{n}
+\]
+
+\textbf{Korrekturfaktoren} für ungleichmäßiges Profil (Energie $\alpha\,\bar v^2/2$, Impuls $\beta\,\rho\,\bar v^2 A$):
+\[
+\alpha = \frac{\int v^3\,\dd A}{\bar v^3 A}, \qquad \beta = \frac{\int v^2\,\dd A}{\bar v^2 A}
+\qquad\text{laminar: } \alpha = 2,\ \beta = \tfrac43; \qquad \text{turbulent: } \alpha \approx \beta \approx 1
+\]
+
+\textbf{Nicht kreisförmiger Querschnitt} (nur turbulent): hydraulischer Durchmesser mit benetztem Umfang $U$:
+\[
+D_h = \frac{4A}{U}, \qquad Re = \frac{\bar v D_h}{\nu}, \qquad \zeta = \lambda\,\frac{L}{D_h}
+\]
+
+\textbf{Einlauf:} zusätzlicher Verlust $\zeta_E$ (gut abgerundet: laminar 1{,}2--1{,}4; turbulent 0{,}02--0{,}1). Anlauflänge laminar ca.\ $0{,}06\,Re\,D$, turbulent ca.\ $(10\ldots20)\,D$. Ausfluss aus einem Behälter über ein Rohr:
+\[
+\bar v = \sqrt{\frac{2 g h}{\alpha + \zeta_E + \lambda\,\frac{L}{D}}}
+\]
+
+\subsection{Formteile und Armaturen}
+
+Ein Großteil der Verluste kommt von \textbf{Ablösung}: Steigt der Druck in Strömungsrichtung ($\partial p/\partial x > 0$, z.\,B.\ im Diffusor oder an der Krümmer-Außenseite), wird die Grenzschicht abgebremst, kehrt in Wandnähe um und löst ab.
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.9]
+\draw[wand] (0,0)--(10,0);
+\foreach \x in {0.3,0.6,...,10} \draw (\x,0)--(\x-0.2,-0.2);
+\foreach \xs/\k in {0.3/1, 3.8/2, 7.3/3} {
+  \draw[thin] (\xs,0)--(\xs,2.0);
+}
+\draw[very thick,acc,domain=0:1,samples=30] plot ({0.3+1.9*(2*\x-\x*\x)},{2*\x});
+\foreach \e in {0.2,0.45,0.7,0.95} \draw[->] (0.3,2*\e)--({0.3+1.9*(2*\e-\e*\e)-0.05},2*\e);
+\draw[very thick,acc,domain=0:1,samples=30] plot ({3.8+1.9*(\x*\x*(3-2*\x))},{2*\x});
+\foreach \e in {0.45,0.7,0.95} \draw[->] (3.8,2*\e)--({3.8+1.9*(\e*\e*(3-2*\e))-0.05},2*\e);
+\draw[very thick,acc,domain=0:1,samples=30] plot ({7.3+1.9*(1.6*\x*\x-0.6*\x)},{2*\x});
+\draw[->] (7.3,0.25)--(7.18,0.25);
+\foreach \e in {0.6,0.8,0.95} \draw[->] (7.3,2*\e)--({7.3+1.9*(1.6*\e*\e-0.6*\e)-0.05},2*\e);
+\draw[thick,acc2,dashed] (3.8,0) .. controls (5.5,0.15) and (7.0,0.55) .. (9.6,0.95);
+\node[lbl,acc2] at (8.9,0.55) {Ablösung};
+\node[lbl] at (1.3,-0.55) {normal};
+\node[lbl] at (4.8,-0.55) {$\partial v/\partial y = 0$ an Wand};
+\node[lbl] at (8.3,-0.55) {Rückströmung};
+\node at (5,2.5) {$\dfrac{\partial p}{\partial x} > 0 \ \longrightarrow$};
+\end{tikzpicture}
+\abb{Ablösung bei Druckanstieg in Strömungsrichtung: Das Profil verformt sich, bis in Wandnähe Rückströmung entsteht.}
+\end{bild}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Bauteil & Verlustbeiwert \\ \midrule
+scharfkantiger Einlauf & $\zeta = \bigl(\frac{1}{\mu} - 1\bigr)^2 \approx 0{,}2\ldots0{,}45$, Einschnürung $\mu = 0{,}6\ldots0{,}7$ \\
+Diffusor ($\vartheta \le 5\ldots6^\circ$) & $\zeta = 0{,}05\ldots0{,}3$, bezogen auf $(v_1^2 - v_2^2)/2$ \\
+Konfusor & $\zeta = 0{,}01\ldots0{,}05$, bezogen auf $(v_2^2 - v_1^2)/2$ \\
+90°-Krümmer & $\zeta = 0{,}1\ldots0{,}5$ \\
+90°-Knie & $\zeta \approx 1{,}3$ \\
+Austritt in großen Behälter & $\zeta_A = 1$ (kinetische Energie geht ganz verloren) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Austrittsverlust allgemein (Carnot) und Blende/Messdüse ($m = A_d/A$):
+\[
+\frac{\Delta p_l}{\rho} = \zeta_A\,\frac{v_1^2}{2},\ \ \zeta_A = \left(1 - \frac{A_1}{A_2}\right)^2
+\qquad
+Q = \frac{\mu\,m}{\sqrt{1 - \mu^2 m^2}}\,A\,\sqrt{\frac{2\,\Delta p}{\rho}} = \alpha\,\varepsilon\,m\,A\,\sqrt{\frac{2\,\Delta p}{\rho}}
+\]
+Armaturen: $\zeta$ hängt von der Stellung ab. Alternativ der $k_v$-Wert ($Q$ in \si{m^3/h}, $\Delta p_l$ in bar, $\rho$ in \si{kg/m^3}): $Q = k_v\sqrt{1000\,\Delta p_l/\rho}$.
+
+Krümmerverluste entstehen durch Ablösung (Fliehkraft), Wandreibung und \textbf{Sekundärströmungen} (Doppelwirbel im Querschnitt). Abhilfe: Beschleunigung im Krümmer oder Umlenkschaufeln.
+
+\subsection{Gesamtverluste und Energiebilanz}
+
+In Reihe geschaltete Bauteile: Die Verluste addieren sich, jeweils mit eigener Geschwindigkeit $v_i = Q/A_i$:
+\[
+\frac{\Delta p_{l,ges}}{\rho} = \sum_i \zeta_i\,\frac{v_i^2}{2} = \frac{Q^2}{2}\sum_i \frac{\zeta_i}{A_i^2}
+\]
+\begin{formel}[title={Erweiterte Bernoulli-Gleichung -- die wichtigste Formel für Rechenaufgaben}]
+\[
+\frac{p_1}{\rho} + \frac{v_1^2}{2} + g z_1 = \frac{p_2}{\rho} + \frac{v_2^2}{2} + g z_2 \pm Y^* + \sum_i \zeta_i\,\frac{v_i^2}{2}
+\qquad (+Y^*\text{ Turbine},\ -Y^*\text{ Pumpe})
+\]
+\end{formel}
+Verzweigung: Energie je Stromfaden bilanzieren, dazu $Q_1 + Q_2 = Q_3$.
+
+\begin{formel}[title={Leistung}]
+\[
+P_h = \rho\,Q\,Y^*, \qquad
+P_T = \eta_m\,\eta_i\,\rho\,Q\,Y_T^*, \qquad
+P_P = \frac{\rho\,Q\,Y_P^*}{\eta_m\,\eta_i}
+\]
+\end{formel}
+
+\begin{merke}
+Turbine $\to$ Wirkungsgrade multiplizieren, Pumpe $\to$ dividieren. Rechnet man die Energie gegen den Atmosphärendruck, sieht man an der Drucklinie sofort, wo \textbf{Unterdruck} entsteht (Kavitationsgefahr).
+\end{merke}
+
+%=====================================================================
+\section{Strömung idealer Gase}\label{sec:gas}
+
+\textbf{Kernaussage:} Bei Gasen ändert sich die Dichte, deshalb rechnet man mit der Enthalpie statt mit $p/\rho$. Eine einfache Düse beschleunigt höchstens auf Schallgeschwindigkeit ($Ma = 1$); darüber hinaus braucht man eine Lavaldüse.
+
+\begin{formel}[title={Energiesatz für Gase (Schwere vernachlässigt)}]
+\[
+\frac{v_1^2}{2} + \frac{\kappa}{\kappa - 1}\,\frac{p_1}{\rho_1} = \frac{v_2^2}{2} + \frac{\kappa}{\kappa - 1}\,\frac{p_2}{\rho_2}
+\quad\Longleftrightarrow\quad
+\frac{v_1^2}{2} + c_p T_1 = \frac{v_2^2}{2} + c_p T_2
+\]
+\[
+c_p = \frac{\kappa}{\kappa - 1}\,R, \qquad
+\text{Isentrope: } \frac{p}{\rho^\kappa} = \text{const}, \qquad
+\frac{T_2}{T_1} = \left(\frac{p_2}{p_1}\right)^{\frac{\kappa-1}{\kappa}}
+\]
+\end{formel}
+
+\subsection{Ausströmen aus einem Behälter (isentrop)}
+
+Kesselzustand $p_0$, $\rho_0$, $T_0$ mit $v_0 = 0$:
+\[
+v = \sqrt{\frac{2\kappa}{\kappa - 1}\,\frac{p_0}{\rho_0}\left[1 - \left(\frac{p}{p_0}\right)^{\frac{\kappa - 1}{\kappa}}\right]}
+\qquad
+\dot m = A\left(\frac{p}{p_0}\right)^{\frac{1}{\kappa}}\sqrt{\frac{2\kappa}{\kappa - 1}\,\rho_0\,p_0\left[1 - \left(\frac{p}{p_0}\right)^{\frac{\kappa - 1}{\kappa}}\right]}
+\]
+\begin{formel}[title={Kritischer Zustand ($Ma^* = 1$, maximaler Massenstrom)}]
+\[
+\frac{p_{kr}}{p_0} = \left(\frac{2}{\kappa + 1}\right)^{\frac{\kappa}{\kappa - 1}} \approx 0{,}528 \ (\text{Luft}),
+\qquad
+\dot m_{max} = A\left(\frac{2}{\kappa + 1}\right)^{\frac{1}{\kappa - 1}}\sqrt{\frac{2\kappa}{\kappa + 1}\,\rho_0\,p_0}
+\]
+\end{formel}
+Senkt man den Außendruck unter $p_{kr}$, steigen Massenstrom und Austrittsgeschwindigkeit nicht weiter; der Strahl expandiert erst hinter der Düse.
+
+\subsection{Lavaldüse}
+
+\begin{bild}
+\begin{tikzpicture}[scale=0.88]
+\fill[wasser] (0,1.6) .. controls (1.2,1.6) and (1.8,0.6) .. (2.6,0.6) .. controls (4.5,0.6) and (7,1.1) .. (9,1.5)
+  -- (9,-1.5) .. controls (7,-1.1) and (4.5,-0.6) .. (2.6,-0.6) .. controls (1.8,-0.6) and (1.2,-1.6) .. (0,-1.6) -- cycle;
+\draw[wand] (0,1.6) .. controls (1.2,1.6) and (1.8,0.6) .. (2.6,0.6) .. controls (4.5,0.6) and (7,1.1) .. (9,1.5);
+\draw[wand] (0,-1.6) .. controls (1.2,-1.6) and (1.8,-0.6) .. (2.6,-0.6) .. controls (4.5,-0.6) and (7,-1.1) .. (9,-1.5);
+\draw[thin,dash dot] (-0.3,0)--(9.3,0);
+\draw[thick,acc,dashed] (2.6,-0.75)--(2.6,0.75);
+\node[lbl] at (1.0,0.25) {$Ma < 1$};
+\node[lbl] at (2.6,1.0) {$Ma = 1$};
+\node[lbl] at (6.0,0.25) {$Ma > 1$};
+\node[lbl,anchor=east] at (-0.1,1.3) {$p_0, T_0$};
+% Druckverlauf
+\begin{scope}[yshift=-6.4cm]
+\draw[->] (0,0)--(9.5,0) node[below left]{$x$};
+\draw[->] (0,0)--(0,4.6) node[left]{$p$};
+\draw[thin,dashed] (0,4)--(9,4); \node[left] at (0,4) {$p_0$};
+\draw[thin,dashed] (0,2.11)--(9,2.11); \node[left] at (0,2.11) {$p_{kr}$};
+\draw[thin,dashed] (2.6,0)--(2.6,4.3);
+\draw[thick] plot[smooth] coordinates {(0,4) (1,3.85) (2,3.35) (2.6,3.05) (3.5,3.25) (6,3.55) (9,3.65)};
+\draw[very thick,acc] plot[smooth] coordinates {(0,4) (1,3.7) (2,2.9) (2.6,2.11) (3.5,1.45) (5,0.95) (7,0.65) (9,0.5)};
+\draw[thick,acc2] (5.5,0.85)--(5.5,2.35);
+\draw[thick,acc2] plot[smooth] coordinates {(5.5,2.35) (7,2.65) (9,2.85)};
+\node[lbl,anchor=west] at (9.05,3.65) {Unterschall};
+\node[lbl,anchor=west] at (9.05,2.85) {Stoß in der Düse};
+\node[lbl,anchor=west] at (9.05,0.5) {Auslegung, $p_L$};
+\node[lbl,acc2,anchor=west] at (5.6,1.55) {Verdichtungsstoß};
+\end{scope}
+\end{tikzpicture}
+\abb{Lavaldüse: Im engsten Querschnitt herrschen $p_{kr}$ und $v = a$. Darunter: Druckverlauf je nach Gegendruck (schematisch).}
+\end{bild}
+
+Erst verengt, dann erweitert: Hinter dem Engpass beschleunigt die Erweiterung auf \textbf{Überschall} ($Ma > 1$). Im Überschall wirkt eine Querschnittserweiterung beschleunigend, umgekehrt wie im Unterschall (folgt aus $\rho\,v\,A = \text{const}$).
+
+\begin{itemize}
+\item Gegendruck hoch: durchgehend Unterschall, die Düse wirkt hinten als Diffusor.
+\item Gegendruck mittel: Überschall bis zu einem \textbf{Verdichtungsstoß} in der Düse, danach Unterschall.
+\item Gegendruck unter dem Lavaldruck $p_L$: Überschall in der ganzen Düse, Nachexpansion außerhalb.
+\end{itemize}
+
+\textbf{Verdichtungsstoß:} sprunghafter Übergang von Überschall auf Unterschall, nicht isentrop (Entropie steigt); der Energiesatz gilt aber weiter. Eine stoßartige Verdünnung ist unmöglich, weil die Entropie nicht abnehmen kann.
+
+%=====================================================================
+\section{Übungsaufgaben -- Lösungswege}
+
+Die Ergebnisse sind nachgerechnet ($g = \SI{9.81}{m/s^2}$). Vergleiche sie mit den Lösungen aus der Übung -- wichtiger als die Zahl ist der Ansatz.
+
+\subsection*{Aufgabe 1 -- Druckluft-Düse (Kap.~\ref{sec:gas})}
+
+\begin{bild}
+\input{skizzen/a1}
+\end{bild}
+
+Gegeben: $p_0 = \SI{6}{bar}$, $T_0 = \SI{313.15}{K}$, $p_1 = \SI{4}{bar}$, $R = \SI{287.1}{J/(kg.K)}$, $\kappa = 1{,}4$, also $c_p = \frac{\kappa R}{\kappa - 1} = \SI{1004.9}{J/(kg.K)}$.
+
+\textbf{a) verlustfrei (isentrop):}
+\[
+T_1 = T_0\left(\frac{p_1}{p_0}\right)^{\frac{\kappa-1}{\kappa}} = 313{,}15\cdot\left(\tfrac{4}{6}\right)^{0{,}2857} \approx \SI{278.9}{K}\ (\SI{5.7}{\celsius})
+\]
+\[
+v_1 = \sqrt{2 c_p (T_0 - T_1)} \approx \SI{262}{m/s},
+\qquad
+\rho_1 = \frac{p_1}{R T_1} \approx \SI{5.0}{kg/m^3}
+\]
+
+\textbf{b) mit $\rho = \rho_0 = \text{const}$:}
+\[
+\rho_0 = \frac{p_0}{R T_0} \approx \SI{6.67}{kg/m^3},
+\qquad
+v = \sqrt{\frac{2\,(p_0 - p_1)}{\rho_0}} \approx \SI{245}{m/s}
+\quad\Rightarrow\quad \text{Fehler} \approx \SI{-7}{\percent}
+\]
+Bei \SI{262}{m/s} ist $v \gg \SI{70}{m/s}$, Inkompressibilität ist hier nicht zulässig.
+
+\textbf{c) mit Verlusten, $v_{1c} = \SI{220}{m/s}$:} Energiesatz (adiabat) liefert $T$, Gasgleichung $\rho$:
+\[
+T_1 = T_0 - \frac{v_{1c}^2}{2 c_p} \approx \SI{289.1}{K}\ (\SI{15.9}{\celsius}),
+\qquad
+\rho_1 = \frac{p_1}{R T_1} \approx \SI{4.82}{kg/m^3},
+\qquad
+\eta = \frac{v_{1c}^2/2}{v_1^2/2} \approx 0{,}70
+\]
+
+\subsection*{Aufgabe 2 -- Gashähne im Hochhaus (Kap.~4/5)}
+
+\begin{bild}
+\input{skizzen/a2}
+\end{bild}
+
+Ansatz: Hydrostatik getrennt für das Gas in der Leitung und die Luft draußen. Gas ist leichter, sein Druck nimmt nach oben langsamer ab -- der Überdruck wächst mit der Höhe.
+\[
+\Delta p_{oben} = \Delta p_{unten} + (\rho_L - \rho_G)\,g\,h = 2000 + 0{,}7\cdot 9{,}81\cdot 30 \approx \SI{2206}{Pa}
+\]
+\[
+\frac{v_{oben}}{v_{unten}} = \sqrt{\frac{\Delta p_{oben}}{\Delta p_{unten}}} = \sqrt{\frac{2206}{2000}} \approx 1{,}05
+\]
+
+\subsection*{Aufgabe 7 -- Körper im Rohr (Kap.~6, Carnot)}
+
+\begin{bild}
+\input{skizzen/a7}
+\end{bild}
+
+Ansatz: $1\to2$ Bernoulli (verlustfrei beschleunigt), $2\to3$ Impulssatz (Vermischung wie Carnot), $1\to3$ Impulssatz für die Kraft. $\alpha = A_k/A = 0{,}5$.
+\[
+v_2 = \frac{v_1}{1 - \alpha} = \SI{20}{m/s},
+\qquad
+p_2 = p_1 + \frac{\rho}{2}\,(v_1^2 - v_2^2) = \SI{0.5}{bar}
+\]
+\[
+p_3 = p_2 + \rho\left[v_2^2(1 - \alpha) - v_3^2\right] = \SI{1.5}{bar}\quad (v_3 = v_1)
+\]
+\[
+F_W = (p_1 - p_3)\,A
+\quad\Rightarrow\quad
+c_W = \frac{p_1 - p_3}{\frac{\rho}{2}\,v_1^2\,\alpha} = \frac{\alpha}{(1 - \alpha)^2} = 2{,}0
+\]
+
+\subsection*{Aufgabe 8 -- Sieb im Rohr (Kap.~6/7)}
+
+\begin{bild}
+\input{skizzen/a8}
+\end{bild}
+
+Ansatz: Impulssatz mit $\beta = \frac43$ (laminares Profil) in Querschnitt 1, Energie mit $\alpha = 2$. Mittlere Geschwindigkeit $\bar v = v_{max}/2 = v_2$. Da die Aufgabe keine Geschwindigkeit nennt, bleibt $v_{max}$ im Ergebnis.
+\[
+\text{a)}\quad F = (p_1 - p_2)\,\pi R^2 + (\beta - 1)\,\rho\,\bar v^2\,\pi R^2 = \pi R^2\left[(p_1 - p_2) + \frac{\rho\,v_{max}^2}{12}\right]
+\]
+\[
+\text{b)}\quad \dot Q = \rho\,Q\left[\frac{p_1 - p_2}{\rho} + (\alpha - 1)\,\frac{\bar v^2}{2}\right] = \pi R^2\,\frac{v_{max}}{2}\left[(p_1 - p_2) + \frac{\rho\,v_{max}^2}{8}\right]
+\]
+
+\subsection*{Aufgabe 9 -- Wassersprung im Gerinne (Kap.~6)}
+
+\begin{bild}
+\input{skizzen/a9}
+\end{bild}
+
+Ansatz: Impulssatz pro Breite $b$ zwischen einem Schnitt links (Tiefe $h_2$, hydrostatisch) und der Wand (Tiefe $h$). Rückströmung aus der Kontinuität:
+\[
+v_r = \frac{v_1 h_1}{h_2 - h_1} \approx \SI{0.51}{m/s},
+\qquad
+\frac{g}{2}\left(h^2 - h_2^2\right) = v_1^2 h_1 + v_r^2 (h_2 - h_1)
+\]
+\[
+h = \sqrt{h_2^2 + \frac{2}{g}\left[v_1^2 h_1 + v_r^2 (h_2 - h_1)\right]} = \sqrt{0{,}25 + \frac{2\cdot 2{,}04}{9{,}81}}\ \mathrm{m} \approx \SI{0.82}{m}
+\]
+
+\subsection*{Aufgabe 13 -- Kreislaufprüfstand (Kap.~7)}
+
+\begin{bild}
+\input{skizzen/a13}
+\end{bild}
+
+Ansatz: Geschlossener Kreislauf, Anfang = Ende. Die Pumpe deckt genau alle Verluste; die Höhe $h$ fällt heraus. Vier Krümmer laut Skizze.
+\[
+v = \frac{Q}{\pi D^2/4} \approx \SI{7.96}{m/s}, \qquad \frac{v^2}{2} \approx \SI{31.7}{J/kg}
+\]
+\[
+\text{a)}\quad Y^* = \frac{v^2}{2}\left[\lambda\,\frac{L_1 + L_2}{D} + \zeta_A + 4\,\zeta_{kr}\right] = 31{,}7\cdot(3{,}5 + 3{,}0 + 1{,}6) \approx \SI{256}{J/kg}
+\]
+\[
+\text{b)}\quad P = \frac{\rho\,Q\,Y^*}{\eta_i\,\eta_m} = \frac{1000\cdot 0{,}25\cdot 256}{0{,}85\cdot 0{,}95}\ \mathrm{W} \approx \SI{79}{kW}
+\qquad
+\text{c)}\quad \dot Q = \frac{\rho\,Q\,Y^*}{\eta_i} \approx \SI{75}{kW}
+\]
+Zu c): Alles, was ins Wasser geht (inklusive innerer Pumpenverluste, ohne Lagerverluste), muss im Kühler wieder heraus.
+
+\textbf{d)} Bernoulli von D nach A bzw.\ von A nach S (Überdrücke):
+\[
+p_D = p_A + \rho g h + \rho\,\frac{v^2}{2}\left(\lambda\,\frac{L_1}{D} + 2\zeta_{kr}\right) \approx \SI{4.48}{bar}
+\]
+\[
+p_S = p_A + \rho g h - \rho\,\frac{v^2}{2}\left(\zeta_A + \lambda\,\frac{L_2}{D} + 2\zeta_{kr}\right) \approx \SI{1.91}{bar}
+\]
+Kontrolle: $p_D - p_S = \rho\,Y^* \approx \SI{2.56}{bar}$ \checkmark
+
+%=====================================================================
+\newpage
+\section{Spickzettel}
+
+\renewcommand{\arraystretch}{1.7}
+\begin{tabularx}{\linewidth}{@{}>{\sffamily\small\bfseries}p{2.6cm}X@{}}
+Stoffwerte & $\tau = \eta\,\dfrac{\partial v}{\partial y}$, \ $\nu = \dfrac{\eta}{\rho}$, \ $Re = \dfrac{v D}{\nu}$, \ $\dfrac{p}{\rho} = R T$, \ $a = \sqrt{\kappa R T}$, \ $a = \sqrt{E/\rho}$ \\
+Masse & $\dot m = \rho\,v\,A = \text{const}$, \quad $Q = v\,A = \text{const}$ \\
+Statik & $p = p_0 + \rho g t$, \ $F = \rho g |z_S| A$, \ $z_{\alpha F} = z_{\alpha S} + \dfrac{I_S}{z_{\alpha S} A}$, \ $F_A = \rho_{Fl}\,g\,V_{Fl}$ \\
+Gas-Statik & $p = p_0\,e^{-\frac{g\rho_0}{p_0}(z - z_0)}$ \\
+Energie & $\dfrac{p_1}{\rho} + \dfrac{v_1^2}{2} + g z_1 = \dfrac{p_2}{\rho} + \dfrac{v_2^2}{2} + g z_2 \pm Y^* + \sum \zeta_i \dfrac{v_i^2}{2}$, \quad $v = \sqrt{2gh}$ \\
+Verluste & $\Delta p_l = \zeta\,\rho\,\dfrac{v^2}{2}$, \ $\zeta = \lambda\dfrac{L}{D}$, \ $\lambda_{lam} = \dfrac{64}{Re}$, \ $\Delta p_{Carnot} = \dfrac{\rho}{2}(v_1 - v_2)^2$, \ $D_h = \dfrac{4A}{U}$ \\
+Kraft & $\vec F_p + \vec F_V + \vec F_S + \dot m_1\vec v_1 - \dot m_2\vec v_2 = 0$, \quad $\vec F_R = -\vec F_S$ \\
+Drehmoment & $M = \rho\,Q\,(r_1 v_1\cos\alpha_1 - r_2 v_2\cos\alpha_2)$, \quad $P = M\,\omega$ \\
+Tragflügel & $F_A = \rho\,v_\infty\,\Gamma\,b = c_A\,\dfrac{\rho}{2}\,v_\infty^2\,b\,l$, \quad $\tan\varepsilon = \dfrac{c_W}{c_A}$ \\
+Leistung & $P_P = \dfrac{\rho\,Q\,Y_P^*}{\eta_i\,\eta_m}$, \quad $P_T = \eta_i\,\eta_m\,\rho\,Q\,Y_T^*$ \\
+Gas & $\dfrac{v^2}{2} + c_p T = \text{const}$, \ $\dfrac{T_2}{T_1} = \left(\dfrac{p_2}{p_1}\right)^{\frac{\kappa-1}{\kappa}}$, \ $\dfrac{p_{kr}}{p_0} = \left(\dfrac{2}{\kappa+1}\right)^{\frac{\kappa}{\kappa-1}} \approx 0{,}528$ \\
+\end{tabularx}
+\renewcommand{\arraystretch}{1}
+
+\begin{merke}[Typische Fehler in der Prüfung]
+\begin{itemize}[leftmargin=*]
+\item Bezugsquerschnitt für $\zeta$ vergessen ($v$ im engen oder im weiten Rohr?).
+\item Vorzeichen von $\dd\vec A$: zeigt immer nach außen, am Eintritt also gegen die Strömung.
+\item Absolut- und Überdruck gemischt; bei Kontrollfläche außen mit $p - p_0$ rechnen.
+\item Temperatur in °C statt K in $p/\rho = RT$ eingesetzt.
+\item Gas als inkompressibel gerechnet, obwohl $v > \SI{70}{m/s}$.
+\item Wirkungsgrade bei der Pumpe multipliziert statt dividiert.
+\end{itemize}
+\end{merke}
+
+\end{document}

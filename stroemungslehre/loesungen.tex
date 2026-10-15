@@ -1,0 +1,372 @@
+\documentclass[11pt,a4paper]{article}
+\input{praeambel_loesungen}
+
+\newtcolorbox{ergebnis}[1][Ergebnis]{colback=acc3!7,colframe=acc3!80!black,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,title={#1},fonttitle=\sffamily\small\bfseries}
+\newcommand{\gegeben}{\textbf{Gegeben:}\ }
+\newcommand{\gesucht}{\textbf{Gesucht:}\ }
+
+\begin{document}
+
+\begin{center}
+{\sffamily\bfseries\huge\color{acc} Grundlagen der Strömungslehre}\\[4pt]
+{\sffamily\Large Lösungen der Übungsaufgaben}\\[6pt]
+{\small Ausführliche Lösungswege zum Aufgabenblatt der Vorlesung von Prof.\ Dr.-Ing.\ G.\ Thieleke}
+\end{center}
+
+\vspace{4pt}
+Jede Lösung folgt demselben Schema: Skizze, Ansatz (welches Werkzeug und warum), Rechnung mit Zwischenergebnissen, Ergebnis und eine kurze Kontrolle. Gerechnet ist mit $g = \SI{9.81}{m/s^2}$ und, wo nicht anders angegeben, $\rho_{Wasser} = \SI{1000}{kg/m^3}$. Die Ergebnisse sind nachgerechnet, aber nicht mit offiziellen Musterlösungen abgeglichen.
+
+\begin{merke}[Umfang]
+Dieses Heft enthält die Aufgaben 1, 2, 7, 8, 9 und 13. Für die übrigen Aufgaben des Blatts lag der Aufgabentext nicht vor; sie werden ergänzt, sobald das Aufgabenblatt vorliegt.
+\end{merke}
+
+\tableofcontents
+
+%=====================================================================
+\section{Aufgabe 1 -- Druckluft-Düse}
+
+\begin{bild}
+\input{skizzen/a1}
+\abb{Druckluft strömt aus einem Kessel durch eine Düse ins Freie.}
+\end{bild}
+
+\gegeben Kessel $p_0 = \SI{6}{bar}$, $T_0 = \SI{313.15}{K}$ (\SI{40}{\celsius}), $v_0 \approx 0$; Austrittsdruck $p_1 = \SI{4}{bar}$; Luft mit $R = \SI{287.1}{J/(kg.K)}$, $\kappa = 1{,}4$.
+
+\gesucht a) $T_1$, $v_1$, $\rho_1$ bei verlustfreier Strömung; b) $v_1$, wenn man die Luft als inkompressibel rechnet, und der Fehler; c) Zustand bei der gemessenen Geschwindigkeit $v_{1c} = \SI{220}{m/s}$ und der Düsenwirkungsgrad.
+
+\textbf{Ansatz:} Bei Gasen mit hoher Geschwindigkeit ändert sich die Dichte merklich. Deshalb wird nicht mit Bernoulli, sondern mit dem Energiesatz für Gase gerechnet:
+\[
+\frac{v_0^2}{2} + c_p T_0 = \frac{v_1^2}{2} + c_p T_1,
+\qquad
+c_p = \frac{\kappa}{\kappa - 1}\,R = \frac{1{,}4}{0{,}4}\cdot 287{,}1 = \SI{1004.9}{J/(kg.K)}
+\]
+
+\subsection*{a) Verlustfrei (isentrop)}
+
+Isentrope zwischen Kessel und Austritt, Exponent $\frac{\kappa - 1}{\kappa} = 0{,}2857$:
+\[
+T_1 = T_0\left(\frac{p_1}{p_0}\right)^{\frac{\kappa-1}{\kappa}} = 313{,}15\cdot\left(\frac{4}{6}\right)^{0{,}2857}\,\mathrm{K} = 313{,}15\cdot 0{,}8906\,\mathrm{K} = \SI{278.9}{K}\ (\SI{5.7}{\celsius})
+\]
+Energiesatz mit $v_0 = 0$:
+\[
+v_1 = \sqrt{2\,c_p\,(T_0 - T_1)} = \sqrt{2\cdot 1004{,}9\cdot 34{,}25}\ \mathrm{m/s} = \sqrt{68\,840}\ \mathrm{m/s} = \SI{262.4}{m/s}
+\]
+Gasgleichung:
+\[
+\rho_1 = \frac{p_1}{R\,T_1} = \frac{4\cdot 10^5}{287{,}1\cdot 278{,}9}\ \mathrm{kg/m^3} = \SI{5.00}{kg/m^3}
+\]
+\textbf{Kontrolle:} $p_1/p_0 = 0{,}667 > 0{,}528$, das Druckverhältnis ist unterkritisch. Schallgeschwindigkeit $a_1 = \sqrt{\kappa R T_1} = \SI{335}{m/s}$, also $Ma_1 = 0{,}78 < 1$. Eine einfache (konvergente) Düse reicht.
+
+\subsection*{b) Inkompressibel gerechnet}
+
+Dichte bleibt auf dem Kesselwert:
+\[
+\rho_0 = \frac{p_0}{R\,T_0} = \frac{6\cdot 10^5}{287{,}1\cdot 313{,}15}\ \mathrm{kg/m^3} = \SI{6.67}{kg/m^3}
+\]
+Bernoulli zwischen Kessel und Austritt:
+\[
+v_1 = \sqrt{\frac{2\,(p_0 - p_1)}{\rho_0}} = \sqrt{\frac{2\cdot 2\cdot 10^5}{6{,}674}}\ \mathrm{m/s} = \SI{244.8}{m/s}
+\]
+\[
+\text{Fehler} = \frac{244{,}8 - 262{,}4}{262{,}4} = \SI{-6.7}{\percent}
+\]
+Die Faustregel ($\rho \approx \text{const}$ nur bis etwa \SI{70}{m/s}) ist hier klar verletzt.
+
+\subsection*{c) Mit Verlusten, $v_{1c} = \SI{220}{m/s}$}
+
+Die Düse ist adiabat, der Energiesatz gilt also weiter. Nur die Isentrope gilt nicht mehr.
+\[
+T_{1c} = T_0 - \frac{v_{1c}^2}{2\,c_p} = 313{,}15\,\mathrm{K} - \frac{220^2}{2\cdot 1004{,}9}\,\mathrm{K} = (313{,}15 - 24{,}08)\,\mathrm{K} = \SI{289.1}{K}\ (\SI{15.9}{\celsius})
+\]
+\[
+\rho_{1c} = \frac{p_1}{R\,T_{1c}} = \frac{4\cdot 10^5}{287{,}1\cdot 289{,}1}\ \mathrm{kg/m^3} = \SI{4.82}{kg/m^3}
+\]
+Düsenwirkungsgrad als Verhältnis der kinetischen Energien (wirklich zu isentrop):
+\[
+\eta_D = \frac{v_{1c}^2/2}{v_1^2/2} = \left(\frac{220}{262{,}4}\right)^2 = 0{,}70
+\]
+Die Reibung erwärmt das Gas: $T_{1c} > T_1$ bei gleichem Druck, deshalb ist auch die Dichte kleiner.
+
+\begin{ergebnis}
+\begin{tabular}{@{}ll@{}}
+a) & $T_1 = \SI{278.9}{K}$, \ $v_1 = \SI{262}{m/s}$, \ $\rho_1 = \SI{5.0}{kg/m^3}$ \\
+b) & $v_1 = \SI{245}{m/s}$, Fehler $\approx \SI{-7}{\percent}$ \\
+c) & $T_{1c} = \SI{289.1}{K}$, \ $\rho_{1c} = \SI{4.82}{kg/m^3}$, \ $\eta_D = 0{,}70$
+\end{tabular}
+\end{ergebnis}
+
+%=====================================================================
+\section{Aufgabe 2 -- Gashähne im Hochhaus}
+
+\begin{bild}
+\input{skizzen/a2}
+\abb{Steigleitung mit Gas; ein Hahn im Erdgeschoss, einer \SI{30}{m} höher.}
+\end{bild}
+
+\gegeben Überdruck am unteren Hahn $\Delta p_{unten} = \SI{2000}{Pa}$, Höhenunterschied $h = \SI{30}{m}$, Dichtedifferenz Luft -- Gas $\rho_L - \rho_G = \SI{0.7}{kg/m^3}$. Das Gas ruht in der Leitung.
+
+\gesucht Verhältnis der Ausströmgeschwindigkeiten $v_{oben}/v_{unten}$.
+
+\textbf{Ansatz:} Hydrostatik getrennt für die ruhende Gassäule in der Leitung und die Luft außen. Über \SI{30}{m} sind die Dichten konstant (Höhenformel nicht nötig).
+\[
+p_{G,oben} = p_{G,unten} - \rho_G\,g\,h,
+\qquad
+p_{L,oben} = p_{L,unten} - \rho_L\,g\,h
+\]
+Subtrahieren liefert den Überdruck oben:
+\[
+\Delta p_{oben} = p_{G,oben} - p_{L,oben} = \Delta p_{unten} + (\rho_L - \rho_G)\,g\,h = 2000\,\mathrm{Pa} + 0{,}7\cdot 9{,}81\cdot 30\,\mathrm{Pa} = \SI{2206}{Pa}
+\]
+Gas ist leichter als Luft, sein Druck nimmt nach oben langsamer ab -- der Überdruck wächst mit der Höhe.
+
+Ausströmen aus dem Hahn (Bernoulli, Gas in der Leitung ruht): $v = \sqrt{2\,\Delta p/\rho_G}$. Die Gasdichte kürzt sich heraus:
+\[
+\frac{v_{oben}}{v_{unten}} = \sqrt{\frac{\Delta p_{oben}}{\Delta p_{unten}}} = \sqrt{\frac{2206}{2000}} = 1{,}05
+\]
+
+\begin{ergebnis}
+$\Delta p_{oben} \approx \SI{2206}{Pa}$, \quad $v_{oben}/v_{unten} \approx 1{,}05$ -- oben strömt das Gas um rund \SI{5}{\percent} schneller aus.
+\end{ergebnis}
+
+%=====================================================================
+\section{Aufgabe 7 -- Körper im Rohr}
+
+\begin{bild}
+\input{skizzen/a7}
+\abb{Ein Körper mit Stirnfläche $A_K$ verengt das Rohr; dahinter vermischt sich der Strahl wie bei der plötzlichen Erweiterung.}
+\end{bild}
+
+\gegeben Wasser, $v_1 = \SI{10}{m/s}$, $p_1 = \SI{2}{bar}$, Flächenverhältnis $\alpha = A_K/A = 0{,}5$. Keine Wandreibung.
+
+\gesucht $p_2$ am Körperende, $p_3$ nach der Vermischung, Widerstandsbeiwert $c_W$ des Körpers.
+
+\textbf{Ansatz:} $1 \to 2$: Beschleunigung im Spalt, verlustfrei $\Rightarrow$ Kontinuität und Bernoulli. $2 \to 3$: Vermischung hinter dem Körper $\Rightarrow$ Impulssatz (wie Carnot). $1 \to 3$: Kraft auf den Körper $\Rightarrow$ Impulssatz.
+
+\subsection*{Schritt 1: Querschnitt 2}
+\[
+v_2 = v_1\,\frac{A}{A - A_K} = \frac{v_1}{1 - \alpha} = \frac{10}{0{,}5}\,\mathrm{m/s} = \SI{20}{m/s}
+\]
+\[
+p_2 = p_1 + \frac{\rho}{2}\left(v_1^2 - v_2^2\right) = 2\cdot 10^5\,\mathrm{Pa} + 500\cdot(100 - 400)\,\mathrm{Pa} = \SI{0.5e5}{Pa} = \SI{0.5}{bar}
+\]
+
+\subsection*{Schritt 2: Querschnitt 3 (Impulssatz $2 \to 3$)}
+
+Wie bei Carnot wirkt $p_2$ auch auf die Rückseite des Körpers, also auf den ganzen Querschnitt $A$. Durch den Spalt tritt der Impulsstrom $\rho\,v_2^2\,(1 - \alpha)A$ ein, in 3 ist $v_3 = v_1$ (Kontinuität):
+\[
+p_2\,A + \rho\,v_2^2\,(1 - \alpha)\,A = p_3\,A + \rho\,v_3^2\,A
+\]
+\[
+p_3 = p_2 + \rho\left[v_2^2(1 - \alpha) - v_3^2\right] = 0{,}5\cdot 10^5\,\mathrm{Pa} + 1000\cdot(400\cdot 0{,}5 - 100)\,\mathrm{Pa} = \SI{1.5}{bar}
+\]
+
+\subsection*{Schritt 3: Widerstandskraft und $c_W$}
+
+Impulssatz von 1 bis 3: Die Impulsströme heben sich auf ($v_1 = v_3$), es bleibt
+\[
+F_W = (p_1 - p_3)\,A = \SI{0.5}{bar}\cdot A
+\]
+Bezogen auf Staudruck und Stirnfläche des Körpers:
+\[
+c_W = \frac{F_W}{\frac{\rho}{2}\,v_1^2\,A_K} = \frac{p_1 - p_3}{\frac{\rho}{2}\,v_1^2\,\alpha} = \frac{0{,}5\cdot 10^5}{500\cdot 100\cdot 0{,}5} = 2{,}0
+\]
+Allgemein mit $p_1 - p_3 = \frac{\rho}{2}(v_2 - v_1)^2 = \frac{\rho}{2}v_1^2\left(\frac{\alpha}{1-\alpha}\right)^2$:
+\[
+c_W = \frac{\alpha}{(1 - \alpha)^2}
+\]
+
+\textbf{Kontrolle:} Der Druckverlust $p_1 - p_3 = \SI{0.5}{bar}$ ist genau der Carnot-Verlust $\frac{\rho}{2}(v_2 - v_3)^2 = 500\cdot 10^2\,\mathrm{Pa}$. \checkmark
+
+\begin{ergebnis}
+$p_2 = \SI{0.5}{bar}$, \quad $p_3 = \SI{1.5}{bar}$, \quad $c_W = \dfrac{\alpha}{(1-\alpha)^2} = 2{,}0$
+\end{ergebnis}
+
+%=====================================================================
+\section{Aufgabe 8 -- Sieb im Rohr}
+
+\begin{bild}
+\input{skizzen/a8}
+\abb{Vor dem Sieb laminares Parabelprofil, dahinter gleichmäßiges Profil. Die im Sieb verlorene Energie wird als Wärme $\dot Q$ abgeführt.}
+\end{bild}
+
+\gegeben Rohr mit Radius $R$, Drücke $p_1$, $p_2$, Dichte $\rho$; in 1 laminares Profil $v(r) = v_{max}\left(1 - r^2/R^2\right)$, in 2 gleichmäßiges Profil.
+
+\gesucht a) Kraft $F$ auf das Sieb, b) abzuführender Wärmestrom $\dot Q$ (Temperatur soll konstant bleiben).
+
+\textbf{Ansatz:} Weil das Profil in 1 nicht gleichmäßig ist, braucht man die Korrekturbeiwerte für Impuls ($\beta$) und kinetische Energie ($\alpha$).
+
+\subsection*{Vorarbeit: mittlere Geschwindigkeit und Beiwerte}
+\[
+\bar v = \frac{1}{\pi R^2}\int_0^R v_{max}\left(1 - \frac{r^2}{R^2}\right) 2\pi r\,\dd r = \frac{v_{max}}{2} = v_2
+\]
+\[
+\beta = \frac{1}{A}\int_A\left(\frac{v}{\bar v}\right)^2 \dd A = \frac{v_{max}^2\,\pi R^2/3}{\bar v^2\,\pi R^2} = \frac43,
+\qquad
+\alpha = \frac{1}{A}\int_A\left(\frac{v}{\bar v}\right)^3 \dd A = \frac{v_{max}^3\,\pi R^2/4}{\bar v^3\,\pi R^2} = 2
+\]
+
+\subsection*{a) Kraft auf das Sieb (Impulssatz)}
+
+Kontrollfläche von 1 bis 2, Wandreibung vernachlässigt:
+\[
+p_1 A + \beta\,\rho\,\bar v^2 A - p_2 A - \rho\,\bar v^2 A - F = 0
+\]
+\[
+F = (p_1 - p_2)\,\pi R^2 + (\beta - 1)\,\rho\,\bar v^2\,\pi R^2 = \pi R^2\left[(p_1 - p_2) + \frac{\rho\,v_{max}^2}{12}\right]
+\]
+Das Sieb muss also nicht nur die Druckdifferenz aufnehmen, sondern auch den Impuls, den es beim Vergleichmäßigen des Profils aus der Strömung nimmt.
+
+\subsection*{b) Wärmestrom (Energiebilanz)}
+
+Bei konstanter Temperatur bleibt die innere Energie gleich. Alles, was an Druck- und kinetischer Energie verloren geht, muss als Wärme hinaus:
+\[
+\dot Q = Q\left[(p_1 - p_2) + (\alpha - 1)\,\rho\,\frac{\bar v^2}{2}\right],
+\qquad Q = \bar v\,\pi R^2 = \frac{v_{max}}{2}\,\pi R^2
+\]
+\[
+\dot Q = \pi R^2\,\frac{v_{max}}{2}\left[(p_1 - p_2) + \frac{\rho\,v_{max}^2}{8}\right]
+\]
+
+\begin{ergebnis}
+$F = \pi R^2\left[(p_1 - p_2) + \dfrac{\rho\,v_{max}^2}{12}\right]$, \qquad
+$\dot Q = \pi R^2\,\dfrac{v_{max}}{2}\left[(p_1 - p_2) + \dfrac{\rho\,v_{max}^2}{8}\right]$
+\par\smallskip
+Die Aufgabe nennt keine Zahlenwerte für die Geschwindigkeit, deshalb bleibt $v_{max}$ im Ergebnis.
+\end{ergebnis}
+
+%=====================================================================
+\section{Aufgabe 9 -- Wasserstrahl gegen Wand im Gerinne}
+
+\begin{bild}
+\input{skizzen/a9}
+\abb{Ein flacher Strahl ($h_1$, $v_1$) läuft am Boden gegen eine Wand und strömt oben mit $v_r$ zurück. An der Wand staut sich das Wasser auf die Höhe $h$.}
+\end{bild}
+
+\gegeben $h_1 = \SI{0.03}{m}$, $v_1 = \SI{8}{m/s}$, Wassertiefe links $h_2 = \SI{0.5}{m}$. Breite $b$ (kürzt sich heraus).
+
+\gesucht Wasserhöhe $h$ an der Wand.
+
+\textbf{Ansatz:} Kontrollvolumen vom linken Schnitt (Tiefe $h_2$) bis zur Wand. In beiden Schnitten ist die Druckverteilung hydrostatisch. An der Wand ruht das Wasser.
+
+\subsection*{Schritt 1: Rückströmung (Kontinuität)}
+
+Was unten zuströmt, muss oben zurück:
+\[
+v_1\,h_1 = v_r\,(h_2 - h_1)
+\quad\Rightarrow\quad
+v_r = \frac{v_1\,h_1}{h_2 - h_1} = \frac{8\cdot 0{,}03}{0{,}47}\,\mathrm{m/s} = \SI{0.51}{m/s}
+\]
+
+\subsection*{Schritt 2: Impulssatz in Strömungsrichtung (pro Breite)}
+
+Hydrostatische Druckkräfte links und an der Wand; der zuströmende Strahl und die abströmende Rückströmung bringen beide Impuls in $+x$-Richtung:
+\[
+\frac{\rho g}{2}\,h_2^2 + \rho\,v_1^2\,h_1 + \rho\,v_r^2\,(h_2 - h_1) = \frac{\rho g}{2}\,h^2
+\]
+\[
+h = \sqrt{h_2^2 + \frac{2}{g}\left[v_1^2\,h_1 + v_r^2\,(h_2 - h_1)\right]}
+\]
+
+\subsection*{Schritt 3: Zahlen}
+\[
+v_1^2\,h_1 + v_r^2\,(h_2 - h_1) = 64\cdot 0{,}03 + 0{,}51^2\cdot 0{,}47 = (1{,}920 + 0{,}122)\,\mathrm{m^3/s^2} = \SI{2.04}{m^3/s^2}
+\]
+\[
+h = \sqrt{0{,}25 + \frac{2\cdot 2{,}04}{9{,}81}}\ \mathrm{m} = \sqrt{0{,}666}\ \mathrm{m} = \SI{0.82}{m}
+\]
+
+\begin{ergebnis}
+$v_r \approx \SI{0.51}{m/s}$, \quad $h \approx \SI{0.82}{m}$
+\end{ergebnis}
+
+%=====================================================================
+\section{Aufgabe 13 -- Kreislaufprüfstand}
+
+\begin{bild}
+\input{skizzen/a13}
+\abb{Geschlossener Wasserkreislauf (schematisch): Die Pumpe fördert von D über $L_1$ mit zwei Krümmern hinauf zur Armatur (Messstelle A, Höhe $h$), von dort über $L_2$ mit zwei Krümmern und den Kühler zurück nach S.}
+\end{bild}
+
+\gegeben Wasser, $Q = \SI{0.25}{m^3/s}$, $D = \SI{0.2}{m}$, Rohrreibung $\lambda\,\frac{L_1 + L_2}{D} = 3{,}5$, Armatur $\zeta_A = 3{,}0$, je Krümmer $\zeta_{kr} = 0{,}4$, Wirkungsgrade $\eta_i = 0{,}85$, $\eta_m = 0{,}95$; Überdruck $p_A$ an der Armatur, die um $h$ über der Pumpe liegt.
+
+\gesucht a) spezifische Förderarbeit $Y^*$, b) Antriebsleistung $P$, c) Wärmestrom $\dot Q$ im Kühler, d) Drücke $p_D$ und $p_S$ an der Pumpe.
+
+\textbf{Annahmen:} vier Krümmer wie in der Skizze, je zwei in $L_1$ und $L_2$; $L_1$ führt von der Druckseite D zur Armatur.
+
+\textbf{Ansatz:} Im geschlossenen Kreislauf sind Anfangs- und Endpunkt gleich. Druck, Geschwindigkeit und Höhe heben sich auf, die Pumpe deckt genau die Verluste; die Höhe $h$ fällt heraus.
+
+\subsection*{Vorarbeit}
+\[
+v = \frac{Q}{\pi D^2/4} = \frac{0{,}25}{\pi\cdot 0{,}01}\,\mathrm{m/s} = \SI{7.96}{m/s},
+\qquad
+\frac{v^2}{2} = \SI{31.7}{J/kg},
+\qquad
+\rho\,\frac{v^2}{2} = \SI{0.317}{bar}
+\]
+
+\subsection*{a) Spezifische Förderarbeit}
+\[
+Y^* = \frac{v^2}{2}\left[\lambda\,\frac{L_1 + L_2}{D} + \zeta_A + 4\,\zeta_{kr}\right] = 31{,}7\cdot(3{,}5 + 3{,}0 + 1{,}6)\,\mathrm{J/kg} = \SI{256}{J/kg}
+\]
+
+\subsection*{b) Antriebsleistung}
+
+Hydraulische Leistung $\rho\,Q\,Y^* = 1000\cdot 0{,}25\cdot 256\,\mathrm{W} = \SI{64.1}{kW}$. Bei der Pumpe werden die Wirkungsgrade dividiert:
+\[
+P = \frac{\rho\,Q\,Y^*}{\eta_i\,\eta_m} = \frac{64{,}1\,\mathrm{kW}}{0{,}85\cdot 0{,}95} = \SI{79}{kW}
+\]
+
+\subsection*{c) Wärmestrom im Kühler}
+
+Ins Wasser geht alles außer den mechanischen Verlusten (Lager, Dichtungen): die hydraulische Leistung plus die inneren Pumpenverluste. Im stationären Betrieb muss genau das im Kühler wieder heraus:
+\[
+\dot Q = \eta_m\,P = \frac{\rho\,Q\,Y^*}{\eta_i} = \frac{64{,}1\,\mathrm{kW}}{0{,}85} = \SI{75}{kW}
+\]
+
+\subsection*{d) Drücke an der Pumpe}
+
+Erweiterte Bernoulli-Gleichung mit Überdrücken, gleiche Geschwindigkeit überall. Von D hinauf zur Armatur (Höhe $h$, Leitung $L_1$, zwei Krümmer):
+\[
+p_D = p_A + \rho\,g\,h + \rho\,\frac{v^2}{2}\left(\lambda\,\frac{L_1}{D} + 2\,\zeta_{kr}\right) \approx \SI{4.48}{bar}
+\]
+Von der Armatur hinunter zur Saugseite S (Armatur, Leitung $L_2$, zwei Krümmer):
+\[
+p_S = p_A + \rho\,g\,h - \rho\,\frac{v^2}{2}\left(\zeta_A + \lambda\,\frac{L_2}{D} + 2\,\zeta_{kr}\right) \approx \SI{1.91}{bar}
+\]
+\textbf{Kontrolle:} Die Pumpe muss genau die Druckdifferenz aufbringen, die der Kreislauf verbraucht:
+\[
+p_D - p_S = \rho\,Y^* = 1000\cdot 256\,\mathrm{Pa} = \SI{2.56}{bar} \ \checkmark
+\]
+
+\begin{ergebnis}
+\begin{tabular}{@{}ll@{}}
+a) & $Y^* \approx \SI{256}{J/kg}$ \\
+b) & $P \approx \SI{79}{kW}$ \\
+c) & $\dot Q \approx \SI{75}{kW}$ \\
+d) & $p_D \approx \SI{4.48}{bar}$, \ $p_S \approx \SI{1.91}{bar}$ (Überdruck); \ $p_D - p_S = \rho\,Y^*$
+\end{tabular}
+\end{ergebnis}
+
+%=====================================================================
+\section{Ergebnisübersicht}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.4cm}@{}}
+\toprule
+\textbf{Nr.} & \textbf{Ergebnis} & \textbf{Werkzeug} \\ \midrule
+1a & $T_1 \approx \SI{278.9}{K}$, $v_1 \approx \SI{262}{m/s}$, $\rho_1 \approx \SI{5.0}{kg/m^3}$ & Isentrope, Energiesatz Gas \\
+1b & $v \approx \SI{245}{m/s}$, Fehler $\approx \SI{-7}{\percent}$ & Bernoulli, $\rho = \rho_0$ \\
+1c & $T_1 \approx \SI{289.1}{K}$, $\rho_1 \approx \SI{4.82}{kg/m^3}$, $\eta_D \approx 0{,}70$ & Energiesatz Gas \\
+2 & $\Delta p_{oben} \approx \SI{2206}{Pa}$, $v_{oben}/v_{unten} \approx 1{,}05$ & Hydrostatik \\
+7 & $p_2 = \SI{0.5}{bar}$, $p_3 = \SI{1.5}{bar}$, $c_W = \alpha/(1-\alpha)^2 = 2{,}0$ & Bernoulli, Impulssatz \\
+8 & $F = \pi R^2\left[(p_1 - p_2) + \rho v_{max}^2/12\right]$ & Impulssatz, $\beta = 4/3$ \\
+  & $\dot Q = \pi R^2 \frac{v_{max}}{2}\left[(p_1 - p_2) + \rho v_{max}^2/8\right]$ & Energiesatz, $\alpha = 2$ \\
+9 & $h \approx \SI{0.82}{m}$ & Kontinuität, Impulssatz \\
+13 & $Y^* \approx \SI{256}{J/kg}$, $P \approx \SI{79}{kW}$, $\dot Q \approx \SI{75}{kW}$, $p_D \approx \SI{4.48}{bar}$, $p_S \approx \SI{1.91}{bar}$ & erweiterte Bernoulli \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}

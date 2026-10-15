@@ -1,0 +1,12 @@
+% Aufgabe 1: Kessel mit Duese
+\begin{tikzpicture}[scale=0.85]
+\fill[wasser] (0,0) rectangle (3,3);
+\fill[wasser] (3,1.0) .. controls (4,1.0) and (4.4,1.3) .. (5.6,1.3) -- (5.6,1.7) .. controls (4.4,1.7) and (4,2.0) .. (3,2.0) -- cycle;
+\draw[wand] (3,2.0) -- (3,3) -- (0,3) -- (0,0) -- (3,0) -- (3,1.0);
+\draw[wand] (3,2.0) .. controls (4,2.0) and (4.4,1.7) .. (5.6,1.7);
+\draw[wand] (3,1.0) .. controls (4,1.0) and (4.4,1.3) .. (5.6,1.3);
+\node[lbl,align=center] at (1.5,1.5) {Kessel\\$p_0,\ T_0$\\$v_0 \approx 0$};
+\draw[thin,dashed] (5.6,0.9)--(5.6,2.1) node[above]{1};
+\draw[pf,acc2] (5.8,1.5)--(7.0,1.5) node[right,black]{$v_1$};
+\node[lbl,anchor=north] at (5.6,0.85) {$p_1,\ T_1,\ \rho_1$};
+\end{tikzpicture}

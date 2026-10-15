@@ -1,0 +1,52 @@
+\usepackage{fontspec}
+\usepackage[ngerman]{babel}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[a4paper,left=2cm,right=4.3cm,top=2.3cm,bottom=2.4cm,headheight=14pt]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.markings}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs,array,tabularx,enumitem,siunitx,titlesec,fancyhdr,caption}
+\usepackage[hidelinks]{hyperref}
+\sisetup{locale=DE}
+
+\definecolor{acc}{RGB}{31,95,170}
+\definecolor{acc2}{RGB}{205,85,40}
+\definecolor{acc3}{RGB}{30,140,90}
+\definecolor{merk}{RGB}{225,145,25}
+\definecolor{wasser}{RGB}{214,232,250}
+
+\titleformat{\section}{\sffamily\Large\bfseries\color{acc}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\section}{0pt}{1.2em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1em}{0.4em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small Strömungslehre -- Lösungen der Übungsaufgaben}
+\fancyhead[R]{\sffamily\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\captionsetup{font={small,sf},labelfont=bf,skip=4pt}
+\setlist{itemsep=1pt,topsep=3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlength{\emergencystretch}{2em}
+
+\newtcolorbox{formel}[1][]{colback=acc!5,colframe=acc!75!black,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,fonttitle=\sffamily\small\bfseries,#1}
+\newtcolorbox{merke}[1][Merke]{colback=merk!9,colframe=merk!85!black,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,title={#1},fonttitle=\sffamily\small\bfseries}
+
+\tikzset{>=Stealth,
+  wand/.style={line width=1.2pt},
+  fluid/.style={fill=wasser},
+  pf/.style={->,line width=1.1pt},
+  mass/.style={<->,thin},
+  lbl/.style={font=\small}}
+
+\newcommand{\abb}[1]{\captionof{figure}{#1}}
+\newenvironment{bild}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}{\end{minipage}\par\medskip}
+\newcommand{\dd}{\mathrm{d}}

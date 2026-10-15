@@ -1,0 +1,21 @@
+% Aufgabe 7: Koerper im Rohr
+\begin{tikzpicture}[scale=0.85]
+\fill[wasser] (0,-1.5) rectangle (10,1.5);
+\draw[wand] (0,1.5)--(10,1.5); \draw[wand] (0,-1.5)--(10,-1.5);
+\fill[gray!55] (3.0,-0.75) .. controls (2.2,-0.75) and (2.2,0.75) .. (3.0,0.75) -- (3.8,0.75) -- (3.8,-0.75) -- cycle;
+\draw[thick] (3.0,-0.75) .. controls (2.2,-0.75) and (2.2,0.75) .. (3.0,0.75) -- (3.8,0.75) -- (3.8,-0.75) -- cycle;
+\node[lbl] at (3.25,0) {$A_K$};
+\draw[acc,thick] (3.8,0.75) .. controls (5.6,0.75) and (6.6,0.3) .. (7.6,0.0);
+\draw[acc,thick] (3.8,-0.75) .. controls (5.6,-0.75) and (6.6,-0.3) .. (7.6,0.0);
+\foreach \x in {0.6,1.0} \draw[thin,gray] (4.6,0) ellipse ({\x} and {0.45*\x});
+\draw[thin,dashed] (1.0,-1.8)--(1.0,1.8) node[above]{1};
+\draw[thin,dashed] (3.8,-1.8)--(3.8,1.8) node[above]{2};
+\draw[thin,dashed] (9.0,-1.8)--(9.0,1.8) node[above]{3};
+\foreach \y in {-1.0,0,1.0} \draw[->,thick,acc2] (0.15,\y)--(0.9,\y);
+\foreach \y in {1.12,-1.12} \draw[->,thick,acc2] (3.9,\y)--(5.2,\y);
+\foreach \y in {-1.0,0,1.0} \draw[->,thick,acc2] (9.1,\y)--(9.85,\y);
+\node[lbl,fill=wasser,inner sep=1pt] at (1.9,-0.6) {$v_1, p_1$};
+\node[lbl,fill=wasser,inner sep=1pt] at (6.0,1.12) {$v_2, p_2$};
+\node[lbl,fill=wasser,inner sep=1pt] at (8.25,-0.6) {$v_3, p_3$};
+\node[lbl] at (8.3,1.15) {$A$};
+\end{tikzpicture}

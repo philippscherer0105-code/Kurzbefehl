@@ -1,0 +1,21 @@
+% Aufgabe 8: Sieb im Rohr
+\begin{tikzpicture}[scale=0.85]
+\fill[wasser] (0,-1.4) rectangle (8,1.4);
+\draw[wand] (0,1.4)--(8,1.4); \draw[wand] (0,-1.4)--(8,-1.4);
+\draw[thick,dash pattern=on 2pt off 1.5pt] (4,-1.4)--(4,1.4);
+\draw[thick] (3.92,-1.4)--(3.92,1.4); \draw[thick] (4.08,-1.4)--(4.08,1.4);
+\node[lbl,anchor=south] at (4,1.45) {Sieb};
+\draw[thin,dashed] (1.0,-1.7)--(1.0,1.7) node[above]{1};
+\draw[thin,dashed] (6.8,-1.7)--(6.8,1.7) node[above]{2};
+\draw[thin] (1.0,-1.4)--(1.0,1.4);
+\draw[thick,acc2,domain=-1.4:1.4,samples=30,smooth] plot ({1.0+2.0*(1-(\x/1.4)^2)},\x);
+\foreach \y in {-1.0,-0.5,0,0.5,1.0} \draw[->,thin,acc2] (1.0,\y)--({1.0+2.0*(1-(\y/1.4)^2)},\y);
+\node[lbl,fill=wasser,inner sep=1pt] at (2.6,-1.1) {$v(r)$};
+\foreach \y in {-1.0,-0.5,0,0.5,1.0} \draw[->,thin,acc2] (6.8,\y)--(7.8,\y);
+\node[lbl,anchor=west] at (8.4,0.5) {$\bar v$};
+\node[lbl,anchor=north] at (1.0,-1.75) {$p_1$};
+\node[lbl,anchor=north] at (6.8,-1.75) {$p_2$};
+\draw[mass] (-0.3,0)--(-0.3,1.4) node[midway,left]{$R$};
+\draw[thin,dash dot] (-0.5,0)--(8.3,0);
+\draw[pf,acc] (4,-1.5)--(4,-2.3) node[right,black]{$\dot Q$};
+\end{tikzpicture}

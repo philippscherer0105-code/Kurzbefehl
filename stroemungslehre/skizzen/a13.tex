@@ -1,0 +1,26 @@
+% Aufgabe 13: Kreislaufpruefstand (schematisch)
+\begin{tikzpicture}[scale=0.85]
+\draw[line width=3pt,wasser!70!acc] (0,0) rectangle (6,3.6);
+% Pumpe unten Mitte, foerdert nach rechts
+\draw[thick,fill=white] (3,0) circle (0.5); \draw[thick] (2.78,0.44)--(3.5,0)--(2.78,-0.44);
+\node[lbl] at (3,-0.85) {Pumpe};
+\fill (3.75,0) circle (1.6pt); \node[lbl,anchor=north] at (3.8,-0.08) {D};
+\fill (2.25,0) circle (1.6pt); \node[lbl,anchor=north] at (2.2,-0.08) {S};
+% Armatur oben Mitte
+\fill[white] (2.65,3.25) rectangle (3.35,3.95);
+\draw[thick] (2.65,3.25)--(3.35,3.95)--(2.65,3.95)--(3.35,3.25)--cycle;
+\fill (3.7,3.6) circle (1.6pt); \node[lbl,anchor=south] at (3.75,3.68) {A};
+\node[lbl,anchor=south] at (2.6,3.95) {Armatur $\zeta_A$};
+% Kuehler links
+\draw[thick,fill=white] (-0.35,1.45) rectangle (0.35,2.15);
+\draw[thin] (-0.35,1.45)--(-0.1,1.8)--(0.1,1.5)--(0.35,1.9);
+\node[lbl,anchor=west] at (0.45,1.8) {Kühler $\dot Q$};
+% Kruemmer
+\foreach \p in {(0,0),(6,0),(6,3.6),(0,3.6)} \fill[acc] \p circle (2.2pt);
+\node[lbl,acc,anchor=west] at (6.1,3.75) {Krümmer $\zeta_{kr}$};
+% Stroemungsrichtung und Leitungen
+\draw[pf,acc2] (6.4,1.2)--(6.4,2.4) node[midway,right,black,font=\small]{$L_1$};
+\draw[pf,acc2] (-0.7,2.9)--(-0.7,0.7) node[midway,left,black,font=\small]{$L_2$};
+\draw[mass] (7.6,0)--(7.6,3.6) node[midway,right]{$h$};
+\draw[thin,dotted] (6,3.6)--(7.7,3.6); \draw[thin,dotted] (6,0)--(7.7,0);
+\end{tikzpicture}
